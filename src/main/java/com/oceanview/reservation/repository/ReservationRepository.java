@@ -61,7 +61,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      * @param checkIn check-in date
      * @return list of reservations with this check-in date
      */
-    List<Reservation> findByCheckIn(LocalDate checkIn);
+    @Query("SELECT r FROM Reservation r WHERE r.checkIn = :checkIn")
+    List<Reservation> findByCheckIn(@Param("checkIn") LocalDate checkIn);
 
     /**
      * Find reservations by check-in date range.
@@ -70,7 +71,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      * @param endDate end of date range
      * @return list of reservations checking in within this range
      */
-    List<Reservation> findByCheckInBetween(LocalDate startDate, LocalDate endDate);
+    @Query("SELECT r FROM Reservation r WHERE r.checkIn BETWEEN :startDate AND :endDate")
+    List<Reservation> findByCheckInBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     /**
      * Find reservations by check-out date range.
@@ -79,7 +81,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
      * @param endDate end of date range
      * @return list of reservations checking out within this range
      */
-    List<Reservation> findByCheckOutBetween(LocalDate startDate, LocalDate endDate);
+    @Query("SELECT r FROM Reservation r WHERE r.checkOut BETWEEN :startDate AND :endDate")
+    List<Reservation> findByCheckOutBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     /**
      * Find active reservations (currently occupied).
