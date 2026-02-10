@@ -1,0 +1,34 @@
+@startuml view-reservation
+title View Reservation - Sequence Diagram
+
+actor User
+participant "Frontend\n(Browser)" as Frontend
+participant "ReservationController" as Controller
+participant "ReservationService" as Service
+participant "ReservationRepository" as Repo
+database "Database" as DB
+
+User -> Frontend: Click "View Reservation"
+Frontend -> Controller: GET /api/reservations/{id}
+activate Controller
+
+Controller -> Service: getReservationById(id)
+activate Service
+
+Service -> Repo: findById(id)
+activate Repo
+
+Repo -> DB: SELECT * FROM reservation\nWHERE id = ?
+DB --> Repo: Reservation record
+deactivate Repo
+
+Repo --> Service: Optional<Reservation>
+Service --> Controller: Reservation object
+deactivate Service
+
+Controller --> Frontend: 200 OK\n{reservation}
+deactivate Controller
+
+Frontend --> User: Display reservation details
+
+@enduml

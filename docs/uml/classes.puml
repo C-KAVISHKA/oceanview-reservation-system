@@ -1,0 +1,43 @@
+@startuml classes
+title OceanView Reservation System - Class Diagram
+
+' TODO: Add entity classes
+class Reservation {
+  - id: Long
+  - guestName: String
+  - checkInDate: LocalDate
+  - checkOutDate: LocalDate
+  - roomNumber: String
+  - status: String
+}
+
+' TODO: Add service classes
+class ReservationService {
+  + createReservation()
+  + getReservation()
+  + updateReservation()
+  + deleteReservation()
+}
+
+' TODO: Add controller classes
+class ReservationController {
+  + POST /api/reservations
+  + GET /api/reservations/{id}
+  + PUT /api/reservations/{id}
+  + DELETE /api/reservations/{id}
+}
+
+' TODO: Add repository interfaces
+interface ReservationRepository {
+  + save()
+  + findById()
+  + findAll()
+  + deleteById()
+}
+
+' TODO: Define relationships
+ReservationController --> ReservationService
+ReservationService --> ReservationRepository
+ReservationRepository --> Reservation
+
+@enduml

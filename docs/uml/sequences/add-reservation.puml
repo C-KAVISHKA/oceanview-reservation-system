@@ -1,0 +1,36 @@
+@startuml add-reservation
+title Add Reservation - Sequence Diagram
+
+actor User
+participant "Frontend\n(Browser)" as Frontend
+participant "ReservationController" as Controller
+participant "ReservationService" as Service
+participant "ReservationRepository" as Repo
+database "Database" as DB
+
+User -> Frontend: Fill reservation form
+User -> Frontend: Click "Submit"
+Frontend -> Controller: POST /api/reservations\n{reservationData}
+activate Controller
+
+Controller -> Service: createReservation(data)
+activate Service
+
+Service -> Service: Validate data
+Service -> Repo: save(reservation)
+activate Repo
+
+Repo -> DB: INSERT reservation
+DB --> Repo: Saved entity
+deactivate Repo
+
+Repo --> Service: Reservation object
+Service --> Controller: Created reservation
+deactivate Service
+
+Controller --> Frontend: 201 Created\n{reservation}
+deactivate Controller
+
+Frontend --> User: Show success message
+
+@enduml

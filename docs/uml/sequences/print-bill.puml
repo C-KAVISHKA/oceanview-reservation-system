@@ -1,0 +1,40 @@
+@startuml print-bill
+title Print Bill - Sequence Diagram
+
+actor User
+participant "Frontend\n(Browser)" as Frontend
+participant "BillingController" as Controller
+participant "BillingService" as Service
+participant "ReservationRepository" as ReservationRepo
+participant "BillingRepository" as BillingRepo
+database "Database" as DB
+
+User -> Frontend: Click "Print Bill"
+Frontend -> Controller: GET /api/billing/{reservationId}
+activate Controller
+
+Controller -> Service: generateBill(reservationId)
+activate Service
+
+Service -> ReservationRepo: findById(reservationId)
+activate ReservationRepo
+ReservationRepo -> DB: SELECT reservation
+DB --> ReservationRepo: Reservation data
+deactivate ReservationRepo
+
+Service -> Service: Calculate total amount
+Service -> BillingRepo: save(bill)
+activate BillingRepo
+BillingRepo -> DB: INSERT bill
+DB --> BillingRepo: Saved bill
+deactivate BillingRepo
+
+Service --> Controller: Bill object
+deactivate Service
+
+Controller --> Frontend: 200 OK\n{bill}
+deactivate Controller
+
+Frontend --> User: Display printable bill
+
+@enduml
