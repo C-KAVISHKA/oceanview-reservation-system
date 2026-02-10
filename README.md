@@ -10,7 +10,7 @@ A Spring Boot REST API backend with static HTML/CSS/vanilla-JS frontend for mana
 
 - **Backend**: Java 17, Spring Boot
 - **Database**: H2 (development), MySQL (optional production)
-- **Frontend**: HTML, CSS, Vanilla JavaScript
+- **Frontend**: HTML, CSS, Vanilla JavaScript (located in `src/main/resources/static/`)
 - **Build Tool**: Maven
 - **Version Control**: Git
 
