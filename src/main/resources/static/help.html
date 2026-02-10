@@ -1,1 +1,185 @@
-<!-- TODO: Help and documentation page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - OceanView Resort</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-app">
+    <!-- Top Navigation -->
+    <nav class="topbar">
+        <a href="dashboard.html" class="topbar-brand">
+            <span class="brand-icon">🌊</span>
+            <div>
+                <h1>OceanView Resort</h1>
+                <span class="brand-sub">Reservation System</span>
+            </div>
+        </a>
+        <div class="topbar-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="new-reservation.html">New Booking</a>
+            <a href="view-reservation.html">Reservations</a>
+            <a href="billing.html">Billing</a>
+            <a href="reports.html">Reports</a>
+            <a href="help.html" class="active">Help</a>
+        </div>
+        <div class="topbar-right">
+            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">Logout</button>
+        </div>
+    </nav>
+
+    <div class="page-content" style="max-width: 900px;">
+        <div class="page-header">
+            <h1>Help & Documentation</h1>
+            <div class="wave-divider"></div>
+            <p>User guide for the OceanView Reservation System</p>
+        </div>
+
+        <div class="help-section">
+            <h2>Getting Started</h2>
+            <p>Welcome to the OceanView Reservation System! This guide will help you navigate and use all the features.</p>
+            <h3>Login</h3>
+            <p>Use your staff credentials to log in. Demo credentials:</p>
+            <ul>
+                <li>Email: <strong>staff@oceanview.com</strong></li>
+                <li>Password: <strong>Passw0rd!</strong></li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h2>Creating a New Reservation</h2>
+            <p>To create a new reservation:</p>
+            <ol>
+                <li>Click <strong>"New Booking"</strong> from the navigation bar</li>
+                <li>Fill in the guest information:
+                    <ul>
+                        <li>Full Name (required, 2-100 characters)</li>
+                        <li>Email Address (required, valid email format)</li>
+                        <li>Contact Number (required, format: +1-555-0101)</li>
+                        <li>Address (required)</li>
+                    </ul>
+                </li>
+                <li>Fill in reservation details:
+                    <ul>
+                        <li>Check-In Date (must be today or future date)</li>
+                        <li>Check-Out Date (must be after check-in)</li>
+                        <li>Room Type (Single $100, Double $150, Suite $250, Deluxe $400)</li>
+                        <li>Number of Guests (1-10)</li>
+                        <li>Special Requests (optional, max 500 characters)</li>
+                    </ul>
+                </li>
+                <li>Click <strong>"Create Reservation"</strong></li>
+                <li>The system will display the reservation ID upon success</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h2>Viewing & Managing Reservations</h2>
+            <p>To view all reservations:</p>
+            <ol>
+                <li>Click <strong>"Reservations"</strong> from the navigation bar</li>
+                <li>Use the search bar to filter by guest name, email, or reservation ID</li>
+                <li>Click <strong>"View"</strong> to see full reservation details</li>
+                <li>Click <strong>"Delete"</strong> to cancel a reservation (requires confirmation)</li>
+            </ol>
+            <h3>Reservation Status</h3>
+            <ul>
+                <li><strong>PENDING</strong> &mdash; Reservation created, awaiting confirmation</li>
+                <li><strong>CONFIRMED</strong> &mdash; Reservation confirmed</li>
+                <li><strong>CANCELLED</strong> &mdash; Reservation cancelled</li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h2>Generating Bills</h2>
+            <p>To generate a bill for a reservation:</p>
+            <ol>
+                <li>Click <strong>"Billing"</strong> from the navigation bar</li>
+                <li>Enter the Reservation ID</li>
+                <li>Click <strong>"Generate Bill"</strong></li>
+                <li>The system will display guest info, reservation details, room charges, service charge (5%), tax (8%), and grand total</li>
+                <li>Click <strong>"Print Bill"</strong> to print or save as PDF</li>
+            </ol>
+            <p><strong>Tip:</strong> You can also click "View Bill" from the reservation details modal on the Reservations page.</p>
+        </div>
+
+        <div class="help-section">
+            <h2>Reports & Analytics</h2>
+            <h3>Occupancy Report</h3>
+            <p>View room occupancy for a specific date:</p>
+            <ol>
+                <li>Click <strong>"Reports"</strong> from the navigation bar</li>
+                <li>Select a date and click <strong>"Generate Report"</strong></li>
+                <li>View total rooms, occupied, available, occupancy rate, and breakdown by room type</li>
+            </ol>
+            <h3>Revenue Report</h3>
+            <p>View revenue for a date range:</p>
+            <ol>
+                <li>Select <strong>From Date</strong> and <strong>To Date</strong></li>
+                <li>Click <strong>"Generate Report"</strong></li>
+                <li>View total revenue, total reservations, average booking value, revenue by room type, and daily breakdown</li>
+            </ol>
+        </div>
+
+        <div class="help-section">
+            <h2>Room Types & Rates</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Room Type</th>
+                            <th>Rate per Night</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Single</td>
+                            <td>$100</td>
+                            <td>Cozy single occupancy room with ocean view</td>
+                        </tr>
+                        <tr>
+                            <td>Double</td>
+                            <td>$150</td>
+                            <td>Spacious double occupancy room</td>
+                        </tr>
+                        <tr>
+                            <td>Suite</td>
+                            <td>$250</td>
+                            <td>Luxury suite with separate living area</td>
+                        </tr>
+                        <tr>
+                            <td>Deluxe</td>
+                            <td>$400</td>
+                            <td>Premium beachfront deluxe suite</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3>Billing Calculations</h3>
+            <ul>
+                <li><strong>Room Charges:</strong> Rate per night &times; Number of nights</li>
+                <li><strong>Service Charge:</strong> 5% of room charges</li>
+                <li><strong>Tax:</strong> 8% of room charges</li>
+                <li><strong>Grand Total:</strong> Room charges + Service charge + Tax</li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h2>Technical Support</h2>
+            <p>If you encounter any issues or need assistance:</p>
+            <ul>
+                <li>Email: <strong>support@oceanview.com</strong></li>
+                <li>Phone: <strong>(555) 123-4567</strong></li>
+                <li>Hours: Monday&ndash;Friday, 9:00 AM &ndash; 5:00 PM</li>
+            </ul>
+        </div>
+
+        <div class="page-footer">
+            &copy; 2026 OceanView Resort, Galle &mdash; All Rights Reserved
+        </div>
+    </div>
+</body>
+</html>

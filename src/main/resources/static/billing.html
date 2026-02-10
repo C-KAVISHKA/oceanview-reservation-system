@@ -1,1 +1,202 @@
-<!-- TODO: Billing and payment page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing - OceanView Resort</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-app">
+    <!-- Top Navigation -->
+    <nav class="topbar no-print">
+        <a href="dashboard.html" class="topbar-brand">
+            <span class="brand-icon">🌊</span>
+            <div>
+                <h1>OceanView Resort</h1>
+                <span class="brand-sub">Reservation System</span>
+            </div>
+        </a>
+        <div class="topbar-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="new-reservation.html">New Booking</a>
+            <a href="view-reservation.html">Reservations</a>
+            <a href="billing.html" class="active">Billing</a>
+            <a href="reports.html">Reports</a>
+            <a href="help.html">Help</a>
+        </div>
+        <div class="topbar-right">
+            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">Logout</button>
+        </div>
+    </nav>
+
+    <div class="page-content" style="max-width: 900px;">
+        <div class="page-header no-print">
+            <h1>Billing & Invoices</h1>
+            <div class="wave-divider"></div>
+            <p>Generate and print bills for reservations</p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="card no-print" style="margin-bottom: 24px;">
+            <h2 style="margin-bottom: 16px;">Generate Bill</h2>
+            <p style="color: var(--gray-500); margin-bottom: 16px;">Enter a reservation ID to generate the bill</p>
+            
+            <div style="display: flex; gap: 12px;">
+                <input type="number" id="reservationIdInput" placeholder="Enter Reservation ID" 
+                       style="flex: 1; padding: 12px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 0.95rem; font-family: var(--font-body);">
+                <button class="btn btn-gold" onclick="generateBill()" style="width: auto;">Generate Bill</button>
+            </div>
+            
+            <div id="searchError" class="error-message" style="display: none; margin-top: 16px;"></div>
+        </div>
+
+        <!-- Bill / Invoice -->
+        <div class="card card-elevated" id="billSection" style="display: none; padding: 48px;">
+            <div class="bill-header">
+                <div style="font-size: 2.2rem; margin-bottom: 8px;">🌊</div>
+                <h1>OceanView Resort</h1>
+                <p style="margin: 4px 0; color: var(--gray-500); font-size: 0.9rem;">Beachfront Boulevard, Galle, Sri Lanka</p>
+                <p style="margin: 4px 0; color: var(--gray-500); font-size: 0.9rem;">Phone: (555) 123-4567 &bull; Email: billing@oceanview.com</p>
+                <h2 style="margin-top: 20px; color: var(--ocean-mid); font-size: 1.2rem; letter-spacing: 3px; text-transform: uppercase;">Invoice</h2>
+            </div>
+
+            <div class="bill-info">
+                <div class="info-section">
+                    <h3>Guest Information</h3>
+                    <div id="guestInfo"></div>
+                </div>
+                <div class="info-section">
+                    <h3>Reservation Details</h3>
+                    <div id="reservationInfo"></div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="charges-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Details</th>
+                            <th style="text-align: right;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chargesBody"></tbody>
+                </table>
+            </div>
+
+            <div class="total-section">
+                <div class="total-row">
+                    <span>Subtotal</span>
+                    <span id="subtotalAmount">$0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Service Charge (5%)</span>
+                    <span id="serviceChargeAmount">$0.00</span>
+                </div>
+                <div class="total-row">
+                    <span>Tax (8%)</span>
+                    <span id="taxAmount">$0.00</span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>Grand Total</span>
+                    <span id="grandTotalAmount">$0.00</span>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; padding: 20px; background: var(--sand-pale); border-radius: var(--radius-sm); text-align: center; border: 1px dashed var(--sand-dark);">
+                <p style="margin: 0; color: var(--gray-700);">Thank you for choosing OceanView Resort!</p>
+                <p style="margin: 6px 0 0 0; color: var(--gray-500); font-size: 0.85rem;">Generated on: <span id="billDate"></span></p>
+            </div>
+
+            <button class="btn btn-primary no-print" onclick="window.print()" style="margin-top: 24px;">Print Bill</button>
+        </div>
+
+        <div class="page-footer no-print">
+            &copy; 2026 OceanView Resort, Galle &mdash; All Rights Reserved
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const reservationId = urlParams.get('id');
+        if (reservationId) {
+            document.getElementById('reservationIdInput').value = reservationId;
+            generateBill();
+        }
+
+        async function generateBill() {
+            const reservationId = document.getElementById('reservationIdInput').value;
+            const searchError = document.getElementById('searchError');
+            const billSection = document.getElementById('billSection');
+            
+            searchError.style.display = 'none';
+            billSection.style.display = 'none';
+            
+            if (!reservationId) {
+                searchError.textContent = 'Please enter a reservation ID';
+                searchError.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const reservation = await API.get('/reservations/' + reservationId);
+                const billing = await API.get('/billing/' + reservationId);
+                
+                document.getElementById('guestInfo').innerHTML = `
+                    <div class="info-row"><span class="info-label">Name</span><span class="info-value">${reservation.guestFullName}</span></div>
+                    <div class="info-row"><span class="info-label">Email</span><span class="info-value">${reservation.email}</span></div>
+                    <div class="info-row"><span class="info-label">Contact</span><span class="info-value">${reservation.contactNumber}</span></div>
+                    <div class="info-row"><span class="info-label">Address</span><span class="info-value">${reservation.address}</span></div>
+                `;
+                
+                const checkIn = new Date(reservation.checkIn);
+                const checkOut = new Date(reservation.checkOut);
+                const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+                
+                document.getElementById('reservationInfo').innerHTML = `
+                    <div class="info-row"><span class="info-label">Reservation ID</span><span class="info-value">#${reservation.id}</span></div>
+                    <div class="info-row"><span class="info-label">Room Type</span><span class="info-value">${reservation.roomType}</span></div>
+                    <div class="info-row"><span class="info-label">Check-In</span><span class="info-value">${reservation.checkIn}</span></div>
+                    <div class="info-row"><span class="info-label">Check-Out</span><span class="info-value">${reservation.checkOut}</span></div>
+                    <div class="info-row"><span class="info-label">Nights</span><span class="info-value">${nights}</span></div>
+                    <div class="info-row"><span class="info-label">Guests</span><span class="info-value">${reservation.numberOfGuests}</span></div>
+                `;
+                
+                const roomRates = { 'SINGLE': 100, 'DOUBLE': 150, 'SUITE': 250, 'DELUXE': 400 };
+                const ratePerNight = roomRates[reservation.roomType] || 0;
+                const roomSubtotal = ratePerNight * nights;
+                
+                document.getElementById('chargesBody').innerHTML = `
+                    <tr>
+                        <td>Room Charges</td>
+                        <td>${reservation.roomType} &mdash; ${nights} night(s) x $${ratePerNight}</td>
+                        <td style="text-align: right;">$${roomSubtotal.toFixed(2)}</td>
+                    </tr>
+                `;
+                
+                const serviceCharge = roomSubtotal * 0.05;
+                const tax = roomSubtotal * 0.08;
+                const grandTotal = roomSubtotal + serviceCharge + tax;
+                
+                document.getElementById('subtotalAmount').textContent = '$' + roomSubtotal.toFixed(2);
+                document.getElementById('serviceChargeAmount').textContent = '$' + serviceCharge.toFixed(2);
+                document.getElementById('taxAmount').textContent = '$' + tax.toFixed(2);
+                document.getElementById('grandTotalAmount').textContent = '$' + grandTotal.toFixed(2);
+                document.getElementById('billDate').textContent = new Date().toLocaleString();
+                
+                billSection.style.display = 'block';
+            } catch (error) {
+                console.error('Error generating bill:', error);
+                searchError.textContent = 'Error: ' + (error.message || 'Could not generate bill. Please check the reservation ID.');
+                searchError.style.display = 'block';
+            }
+        }
+
+        document.getElementById('reservationIdInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') generateBill();
+        });
+    </script>
+</body>
+</html>

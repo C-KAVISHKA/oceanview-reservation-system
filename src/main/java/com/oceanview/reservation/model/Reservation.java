@@ -12,16 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * Reservation entity representing a hotel room reservation.
- * 
- * This entity stores all information about a guest's reservation including
- * guest details, room information, dates, and billing details.
- * 
- * @author Enzo
- * @version 1.0.0
- * @since 2026-02-10
- */
+// Reservation entity - stores all booking details for a guest
 @Entity
 @Table(name = "reservation")
 @Data
@@ -80,7 +71,7 @@ public class Reservation {
     private String specialRequests;
 
     @Column(name = "status", length = 20)
-    private String status = "PENDING"; // PENDING, CONFIRMED, CANCELLED, COMPLETED
+    private String status = "PENDING";
 
     @Column(name = "total_amount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
@@ -93,12 +84,7 @@ public class Reservation {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    /**
-     * Validates that check-out date is after check-in date.
-     * This is a business rule validation method.
-     * 
-     * @return true if dates are valid, false otherwise
-     */
+    // Make sure check-out is after check-in
     @AssertTrue(message = "Check-out date must be after check-in date")
     public boolean isValidDateRange() {
         if (checkIn == null || checkOut == null) {
@@ -107,11 +93,7 @@ public class Reservation {
         return checkOut.isAfter(checkIn);
     }
 
-    /**
-     * Calculates the number of nights for this reservation.
-     * 
-     * @return number of nights between check-in and check-out
-     */
+    // Calculate how many nights the guest is staying
     @Transient
     public long getNumberOfNights() {
         if (checkIn == null || checkOut == null) {

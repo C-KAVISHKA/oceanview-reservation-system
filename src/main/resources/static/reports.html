@@ -1,1 +1,298 @@
-<!-- TODO: Reports and analytics page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - OceanView Resort</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-app">
+    <!-- Top Navigation -->
+    <nav class="topbar">
+        <a href="dashboard.html" class="topbar-brand">
+            <span class="brand-icon">🌊</span>
+            <div>
+                <h1>OceanView Resort</h1>
+                <span class="brand-sub">Reservation System</span>
+            </div>
+        </a>
+        <div class="topbar-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="new-reservation.html">New Booking</a>
+            <a href="view-reservation.html">Reservations</a>
+            <a href="billing.html">Billing</a>
+            <a href="reports.html" class="active">Reports</a>
+            <a href="help.html">Help</a>
+        </div>
+        <div class="topbar-right">
+            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">Logout</button>
+        </div>
+    </nav>
+
+    <div class="page-content" style="max-width: 1200px;">
+        <div class="page-header">
+            <h1>Reports & Analytics</h1>
+            <div class="wave-divider"></div>
+            <p>View occupancy and revenue reports</p>
+        </div>
+
+        <!-- Occupancy Report -->
+        <div class="card" style="margin-bottom: 24px;">
+            <h2 class="form-section-title">Room Occupancy Report</h2>
+            <p style="color: var(--gray-500); margin-bottom: 16px;">View room occupancy for a specific date</p>
+
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+                <input type="date" id="occupancyDate" class="form-control" style="max-width: 220px;">
+                <button class="btn btn-primary" onclick="generateOccupancyReport()">Generate Report</button>
+            </div>
+
+            <div id="occupancyError" class="error-message" style="display: none;"></div>
+            <div id="occupancyLoading" class="info-message" style="display: none;">Loading report...</div>
+
+            <div id="occupancyResults" style="display: none;">
+                <div class="stats-grid" style="margin-bottom: 28px;">
+                    <div class="report-stat-card">
+                        <p>Total Rooms</p>
+                        <h3 id="totalRooms">-</h3>
+                    </div>
+                    <div class="report-stat-card">
+                        <p>Occupied Rooms</p>
+                        <h3 id="occupiedRooms">-</h3>
+                    </div>
+                    <div class="report-stat-card">
+                        <p>Available Rooms</p>
+                        <h3 id="availableRooms">-</h3>
+                    </div>
+                    <div class="report-stat-card">
+                        <p>Occupancy Rate</p>
+                        <h3 id="occupancyRate">-</h3>
+                    </div>
+                </div>
+
+                <h3 class="form-section-title" style="margin-top: 0;">Room Type Breakdown</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Room Type</th>
+                                <th>Total</th>
+                                <th>Occupied</th>
+                                <th>Available</th>
+                                <th>Occupancy %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="roomBreakdown"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Report -->
+        <div class="card">
+            <h2 class="form-section-title">Revenue Report</h2>
+            <p style="color: var(--gray-500); margin-bottom: 16px;">View revenue for a date range</p>
+
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+                <input type="date" id="revenueFrom" class="form-control" style="max-width: 220px;">
+                <input type="date" id="revenueTo" class="form-control" style="max-width: 220px;">
+                <button class="btn btn-primary" onclick="generateRevenueReport()">Generate Report</button>
+            </div>
+
+            <div id="revenueError" class="error-message" style="display: none;"></div>
+            <div id="revenueLoading" class="info-message" style="display: none;">Loading report...</div>
+
+            <div id="revenueResults" style="display: none;">
+                <div class="stats-grid" style="margin-bottom: 28px;">
+                    <div class="report-stat-card">
+                        <p>Total Revenue</p>
+                        <h3 id="totalRevenue">-</h3>
+                    </div>
+                    <div class="report-stat-card">
+                        <p>Total Reservations</p>
+                        <h3 id="totalReservations">-</h3>
+                    </div>
+                    <div class="report-stat-card">
+                        <p>Average Booking Value</p>
+                        <h3 id="averageRevenue">-</h3>
+                    </div>
+                </div>
+
+                <h3 class="form-section-title" style="margin-top: 0;">Revenue by Room Type</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Room Type</th>
+                                <th>Reservations</th>
+                                <th style="text-align: right;">Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="roomTypeRevenue"></tbody>
+                    </table>
+                </div>
+
+                <h3 class="form-section-title" style="margin-top: 28px;">Daily Revenue</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Reservations</th>
+                                <th style="text-align: right;">Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dailyRevenue"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            &copy; 2026 OceanView Resort, Galle &mdash; All Rights Reserved
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('occupancyDate').value = today;
+        document.getElementById('revenueFrom').value = today;
+        document.getElementById('revenueTo').value = today;
+
+        async function generateOccupancyReport() {
+            const date = document.getElementById('occupancyDate').value;
+            const errorDiv = document.getElementById('occupancyError');
+            const loadingDiv = document.getElementById('occupancyLoading');
+            const resultsDiv = document.getElementById('occupancyResults');
+
+            errorDiv.style.display = 'none';
+            resultsDiv.style.display = 'none';
+
+            if (!date) {
+                errorDiv.textContent = 'Please select a date';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+
+            try {
+                const reservations = await API.get('/reservations');
+                const occupiedReservations = reservations.filter(r => {
+                    return date >= r.checkIn && date < r.checkOut && r.status !== 'CANCELLED';
+                });
+
+                const totalRooms = 100;
+                const occupiedRooms = occupiedReservations.length;
+                const availableRooms = totalRooms - occupiedRooms;
+                const occupancyRate = ((occupiedRooms / totalRooms) * 100).toFixed(1);
+
+                document.getElementById('totalRooms').textContent = totalRooms;
+                document.getElementById('occupiedRooms').textContent = occupiedRooms;
+                document.getElementById('availableRooms').textContent = availableRooms;
+                document.getElementById('occupancyRate').textContent = occupancyRate + '%';
+
+                const roomTypes = ['SINGLE', 'DOUBLE', 'SUITE', 'DELUXE'];
+                const roomCapacity = { SINGLE: 25, DOUBLE: 40, SUITE: 25, DELUXE: 10 };
+
+                document.getElementById('roomBreakdown').innerHTML = roomTypes.map(type => {
+                    const occupied = occupiedReservations.filter(r => r.roomType === type).length;
+                    const total = roomCapacity[type];
+                    const available = total - occupied;
+                    const rate = ((occupied / total) * 100).toFixed(1);
+                    return '<tr><td>' + type + '</td><td>' + total + '</td><td>' + occupied + '</td><td>' + available + '</td><td>' + rate + '%</td></tr>';
+                }).join('');
+
+                loadingDiv.style.display = 'none';
+                resultsDiv.style.display = 'block';
+            } catch (error) {
+                console.error('Error generating occupancy report:', error);
+                loadingDiv.style.display = 'none';
+                errorDiv.textContent = 'Error: ' + (error.message || 'Could not generate report');
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        async function generateRevenueReport() {
+            const fromDate = document.getElementById('revenueFrom').value;
+            const toDate = document.getElementById('revenueTo').value;
+            const errorDiv = document.getElementById('revenueError');
+            const loadingDiv = document.getElementById('revenueLoading');
+            const resultsDiv = document.getElementById('revenueResults');
+
+            errorDiv.style.display = 'none';
+            resultsDiv.style.display = 'none';
+
+            if (!fromDate || !toDate) {
+                errorDiv.textContent = 'Please select both from and to dates';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            if (fromDate > toDate) {
+                errorDiv.textContent = 'From date must be before to date';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+
+            try {
+                const reservations = await API.get('/reservations');
+                const relevantReservations = reservations.filter(r => {
+                    return r.checkIn >= fromDate && r.checkIn <= toDate && r.status !== 'CANCELLED';
+                });
+
+                const roomRates = { 'SINGLE': 100, 'DOUBLE': 150, 'SUITE': 250, 'DELUXE': 400 };
+
+                const revenueData = relevantReservations.map(r => {
+                    const checkIn = new Date(r.checkIn);
+                    const checkOut = new Date(r.checkOut);
+                    const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+                    const roomSubtotal = roomRates[r.roomType] * nights;
+                    const serviceCharge = roomSubtotal * 0.05;
+                    const tax = roomSubtotal * 0.08;
+                    const total = roomSubtotal + serviceCharge + tax;
+                    return { ...r, nights: nights, revenue: total };
+                });
+
+                const totalRevenue = revenueData.reduce((sum, r) => sum + r.revenue, 0);
+                const totalReservations = revenueData.length;
+                const averageRevenue = totalReservations > 0 ? totalRevenue / totalReservations : 0;
+
+                document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+                document.getElementById('totalReservations').textContent = totalReservations;
+                document.getElementById('averageRevenue').textContent = '$' + averageRevenue.toFixed(2);
+
+                const roomTypes = ['SINGLE', 'DOUBLE', 'SUITE', 'DELUXE'];
+                document.getElementById('roomTypeRevenue').innerHTML = roomTypes.map(type => {
+                    const typeData = revenueData.filter(r => r.roomType === type);
+                    const typeRevenue = typeData.reduce((sum, r) => sum + r.revenue, 0);
+                    return '<tr><td>' + type + '</td><td>' + typeData.length + '</td><td style="text-align:right">$' + typeRevenue.toFixed(2) + '</td></tr>';
+                }).join('');
+
+                const dailyData = {};
+                revenueData.forEach(r => {
+                    if (!dailyData[r.checkIn]) dailyData[r.checkIn] = { count: 0, revenue: 0 };
+                    dailyData[r.checkIn].count++;
+                    dailyData[r.checkIn].revenue += r.revenue;
+                });
+
+                const dailyHtml = Object.keys(dailyData).sort().map(date => {
+                    return '<tr><td>' + date + '</td><td>' + dailyData[date].count + '</td><td style="text-align:right">$' + dailyData[date].revenue.toFixed(2) + '</td></tr>';
+                }).join('');
+
+                document.getElementById('dailyRevenue').innerHTML = dailyHtml || '<tr><td colspan="3" style="text-align:center; color: var(--gray-500);">No data available</td></tr>';
+
+                loadingDiv.style.display = 'none';
+                resultsDiv.style.display = 'block';
+            } catch (error) {
+                console.error('Error generating revenue report:', error);
+                loadingDiv.style.display = 'none';
+                errorDiv.textContent = 'Error: ' + (error.message || 'Could not generate report');
+                errorDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

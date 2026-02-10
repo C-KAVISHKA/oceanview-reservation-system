@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - OceanView Reservation System</title>
+    <title>Login - OceanView Resort</title>
+    <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body class="page-login">
     <div class="container">
         <div class="login-container">
+            <div class="brand-logo">🌊</div>
             <h1>OceanView Resort</h1>
-            <h2>Staff Login</h2>
+            <h2>Staff Portal</h2>
             
-            <form id="loginForm" class="login-form">
+            <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input 
@@ -37,11 +39,11 @@
                 
                 <div id="errorMessage" class="error-message" style="display: none;"></div>
                 
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
             
             <div class="demo-info">
-                <p><strong>Demo Credentials:</strong></p>
+                <p><strong>Demo Credentials</strong></p>
                 <p>Email: staff@oceanview.com</p>
                 <p>Password: Passw0rd!</p>
             </div>
@@ -50,87 +52,60 @@
 
     <script src="js/api.js"></script>
     <script>
-        // Get form elements
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const errorMessage = document.getElementById('errorMessage');
 
-        /**
-         * Display error message to user
-         * @param {string} message - Error message to display
-         */
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
         }
 
-        /**
-         * Hide error message
-         */
         function hideError() {
             errorMessage.style.display = 'none';
             errorMessage.textContent = '';
         }
 
-        /**
-         * Handle login form submission
-         * @param {Event} event - Form submit event
-         */
         async function handleLogin(event) {
-            // Prevent default form submission
             event.preventDefault();
-            
-            // Hide any previous errors
             hideError();
             
-            // Get form values
             const email = emailInput.value.trim();
             const password = passwordInput.value;
             
-            // Basic validation
             if (!email || !password) {
                 showError('Please enter both email and password');
                 return;
             }
             
             try {
-                // Disable submit button to prevent double-submission
                 const submitButton = loginForm.querySelector('button[type="submit"]');
                 submitButton.disabled = true;
-                submitButton.textContent = 'Logging in...';
+                submitButton.textContent = 'Signing in...';
                 
-                // Call API to login
                 const response = await API.post('/auth/login', {
                     email: email,
                     password: password
                 });
                 
-                // Store token in sessionStorage
                 if (response.token) {
                     sessionStorage.setItem('authToken', response.token);
                 }
-                
-                // Store user info if provided
                 if (response.user) {
                     sessionStorage.setItem('userEmail', response.user.email);
                     sessionStorage.setItem('userRole', response.user.role);
                     sessionStorage.setItem('userName', response.user.name);
                 }
                 
-                // Redirect to new reservation page
-                window.location.href = 'new-reservation.html';
+                window.location.href = 'dashboard.html';
                 
             } catch (error) {
-                // Handle login errors
                 console.error('Login error:', error);
-                
-                // Re-enable submit button
                 const submitButton = loginForm.querySelector('button[type="submit"]');
                 submitButton.disabled = false;
-                submitButton.textContent = 'Login';
+                submitButton.textContent = 'Sign In';
                 
-                // Display error message
                 if (error.status === 401) {
                     showError('Invalid email or password. Please try again.');
                 } else if (error.message) {
@@ -141,13 +116,10 @@
             }
         }
 
-        // Attach event listener to form
         loginForm.addEventListener('submit', handleLogin);
 
-        // Check if user is already logged in
         if (sessionStorage.getItem('authToken')) {
-            // Already logged in, redirect to new reservation page
-            window.location.href = 'new-reservation.html';
+            window.location.href = 'dashboard.html';
         }
     </script>
 </body>

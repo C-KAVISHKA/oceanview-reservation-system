@@ -1,1 +1,134 @@
-<!-- TODO: User dashboard page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - OceanView Resort</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-app">
+    <!-- Top Navigation -->
+    <nav class="topbar">
+        <a href="dashboard.html" class="topbar-brand">
+            <span class="brand-icon">🌊</span>
+            <div>
+                <h1>OceanView Resort</h1>
+                <span class="brand-sub">Reservation System</span>
+            </div>
+        </a>
+        <div class="topbar-nav">
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <a href="new-reservation.html">New Booking</a>
+            <a href="view-reservation.html">Reservations</a>
+            <a href="billing.html">Billing</a>
+            <a href="reports.html">Reports</a>
+            <a href="help.html">Help</a>
+        </div>
+        <div class="topbar-right">
+            <span class="topbar-user" id="userName">Staff</span>
+            <button class="btn btn-outline btn-sm" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Welcome to OceanView Resort</h1>
+            <div class="wave-divider"></div>
+            <p>Manage reservations, billing, and reports from your dashboard.</p>
+        </div>
+
+        <!-- Navigation Cards -->
+        <div class="nav-grid">
+            <a href="new-reservation.html" class="nav-card">
+                <span class="icon">🏖️</span>
+                <h2>New Reservation</h2>
+                <p>Create a new room reservation for a guest</p>
+            </a>
+
+            <a href="view-reservation.html" class="nav-card">
+                <span class="icon">📋</span>
+                <h2>View Reservations</h2>
+                <p>Search and manage all reservations</p>
+            </a>
+
+            <a href="billing.html" class="nav-card">
+                <span class="icon">💳</span>
+                <h2>Billing & Invoices</h2>
+                <p>Generate bills and print invoices</p>
+            </a>
+
+            <a href="reports.html" class="nav-card">
+                <span class="icon">📊</span>
+                <h2>Reports</h2>
+                <p>View occupancy and revenue analytics</p>
+            </a>
+
+            <a href="help.html" class="nav-card">
+                <span class="icon">📖</span>
+                <h2>Help & Guide</h2>
+                <p>System documentation for staff</p>
+            </a>
+        </div>
+
+        <!-- Quick Stats -->
+        <h2 style="margin-top: 40px; margin-bottom: 20px;">Quick Stats</h2>
+        <div class="wave-divider"></div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <p>Total Reservations</p>
+                <h3 id="totalReservations">-</h3>
+            </div>
+            <div class="stat-card">
+                <p>Confirmed</p>
+                <h3 id="confirmedReservations">-</h3>
+            </div>
+            <div class="stat-card">
+                <p>Pending</p>
+                <h3 id="pendingReservations">-</h3>
+            </div>
+            <div class="stat-card">
+                <p>Today's Check-ins</p>
+                <h3 id="todayCheckIns">-</h3>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            &copy; 2026 OceanView Resort, Galle &mdash; All Rights Reserved
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        const userName = sessionStorage.getItem('userName') || sessionStorage.getItem('userEmail') || 'Staff';
+        document.getElementById('userName').textContent = userName;
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        async function loadStats() {
+            try {
+                const reservations = await API.get('/reservations');
+                document.getElementById('totalReservations').textContent = reservations.length;
+                
+                const confirmed = reservations.filter(r => r.status === 'CONFIRMED').length;
+                document.getElementById('confirmedReservations').textContent = confirmed;
+                
+                const pending = reservations.filter(r => r.status === 'PENDING').length;
+                document.getElementById('pendingReservations').textContent = pending;
+                
+                const today = new Date().toISOString().split('T')[0];
+                const todayCheckIns = reservations.filter(r => r.checkIn === today).length;
+                document.getElementById('todayCheckIns').textContent = todayCheckIns;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

@@ -1,40 +1,15 @@
-/**
- * API Client Wrapper
- * 
- * Simple wrapper around fetch for making REST API calls to the backend.
- * Automatically handles:
- * - Content-Type headers
- * - Authorization token from sessionStorage
- * - Error handling for non-2xx responses
- * - JSON parsing
- * 
- * @author Enzo
- * @version 1.0.0
- * @since 2026-02-10
- */
+// API client - wraps fetch for REST calls to the backend
 
 const API = {
-    /**
-     * Base URL for all API requests.
-     * Defaults to current origin + /api
-     */
+    // Base URL for API requests
     baseURL: window.location.origin + '/api',
 
-    /**
-     * Get authentication token from sessionStorage.
-     * @returns {string|null} JWT token or null if not logged in
-     */
+    // Get auth token from session
     getToken() {
         return sessionStorage.getItem('authToken');
     },
 
-    /**
-     * Build headers for API requests.
-     * Always includes Content-Type: application/json.
-     * Adds Authorization header if token is present in sessionStorage.
-     * 
-     * @returns {Object} headers object
-     */
+    // Build request headers (adds auth token if logged in)
     buildHeaders() {
         const headers = {
             'Content-Type': 'application/json'
@@ -48,14 +23,7 @@ const API = {
         return headers;
     },
 
-    /**
-     * Handle fetch response, checking for errors.
-     * Throws meaningful error if response is not ok (non-2xx status).
-     * 
-     * @param {Response} response - fetch response object
-     * @returns {Promise<any>} parsed JSON response
-     * @throws {Error} if response is not ok
-     */
+    // Parse response and throw on errors
     async handleResponse(response) {
         // Try to parse response as JSON
         let data;
@@ -67,7 +35,7 @@ const API = {
             data = await response.text();
         }
 
-        // If response is not ok (status not in 200-299 range), throw error
+        // If not 2xx, throw with the error message from the server
         if (!response.ok) {
             const errorMessage = data.error || data.message || data || `HTTP ${response.status}: ${response.statusText}`;
             const error = new Error(errorMessage);
@@ -79,13 +47,7 @@ const API = {
         return data;
     },
 
-    /**
-     * Make a GET request.
-     * 
-     * @param {string} path - API endpoint path (e.g., '/reservations')
-     * @returns {Promise<any>} response data
-     * @throws {Error} if request fails
-     */
+    // GET request
     async get(path) {
         const url = this.baseURL + path;
         const response = await fetch(url, {
@@ -95,14 +57,7 @@ const API = {
         return this.handleResponse(response);
     },
 
-    /**
-     * Make a POST request.
-     * 
-     * @param {string} path - API endpoint path (e.g., '/auth/login')
-     * @param {Object} body - request body (will be JSON stringified)
-     * @returns {Promise<any>} response data
-     * @throws {Error} if request fails
-     */
+    // POST request
     async post(path, body) {
         const url = this.baseURL + path;
         const response = await fetch(url, {
@@ -113,14 +68,7 @@ const API = {
         return this.handleResponse(response);
     },
 
-    /**
-     * Make a PUT request.
-     * 
-     * @param {string} path - API endpoint path (e.g., '/reservations/1')
-     * @param {Object} body - request body (will be JSON stringified)
-     * @returns {Promise<any>} response data
-     * @throws {Error} if request fails
-     */
+    // PUT request
     async put(path, body) {
         const url = this.baseURL + path;
         const response = await fetch(url, {
@@ -131,13 +79,7 @@ const API = {
         return this.handleResponse(response);
     },
 
-    /**
-     * Make a DELETE request.
-     * 
-     * @param {string} path - API endpoint path (e.g., '/reservations/1')
-     * @returns {Promise<any>} response data
-     * @throws {Error} if request fails
-     */
+    // DELETE request
     async delete(path) {
         const url = this.baseURL + path;
         const response = await fetch(url, {

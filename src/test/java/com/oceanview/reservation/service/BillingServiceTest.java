@@ -10,17 +10,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for BillingService
- * 
- * Test Coverage:
- * - UT-001: Billing Calculation - Standard Reservation
- * - UT-002: Billing Calculation - Single Night
- * - UT-003: Billing Calculation - Extended Stay
- * - UT-004: Number of Nights Calculation
- * - UT-005: Invalid Date Range
- * - UT-006: Decimal Precision
- */
+// Unit tests for billing calculations
 @DisplayName("BillingService Unit Tests")
 public class BillingServiceTest {
 

@@ -1,1 +1,203 @@
-<!-- TODO: View reservation details page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Reservations - OceanView Resort</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-app">
+    <!-- Top Navigation -->
+    <nav class="topbar">
+        <a href="dashboard.html" class="topbar-brand">
+            <span class="brand-icon">🌊</span>
+            <div>
+                <h1>OceanView Resort</h1>
+                <span class="brand-sub">Reservation System</span>
+            </div>
+        </a>
+        <div class="topbar-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="new-reservation.html">New Booking</a>
+            <a href="view-reservation.html" class="active">Reservations</a>
+            <a href="billing.html">Billing</a>
+            <a href="reports.html">Reports</a>
+            <a href="help.html">Help</a>
+        </div>
+        <div class="topbar-right">
+            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">Logout</button>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="page-header">
+            <h1>Reservations</h1>
+            <div class="wave-divider"></div>
+            <p>Search and manage all guest reservations</p>
+        </div>
+
+        <!-- Search -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search by guest name, email, or reservation ID...">
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card card-elevated">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">All Reservations</h2>
+                <span id="reservationCount" style="color: var(--gray-500); font-size: 0.9rem;">Loading...</span>
+            </div>
+            
+            <div id="loadingMessage" style="text-align: center; padding: 40px; color: var(--gray-500);">
+                Loading reservations...
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+            <div class="table-wrapper">
+                <table id="reservationsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Guest Name</th>
+                            <th>Email</th>
+                            <th>Room</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th>Guests</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="page-footer">
+            &copy; 2026 OceanView Resort, Galle &mdash; All Rights Reserved
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reservation Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        let allReservations = [];
+
+        async function loadReservations() {
+            try {
+                const reservations = await API.get('/reservations');
+                allReservations = reservations;
+                displayReservations(reservations);
+                document.getElementById('reservationCount').textContent = reservations.length + ' reservations found';
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('reservationsTable').style.display = 'table';
+            } catch (error) {
+                console.error('Error loading reservations:', error);
+                document.getElementById('loadingMessage').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = 'Error loading reservations: ' + error.message;
+            }
+        }
+
+        function displayReservations(reservations) {
+            const tbody = document.getElementById('reservationsBody');
+            tbody.innerHTML = '';
+
+            if (reservations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: var(--gray-500);">No reservations found</td></tr>';
+                return;
+            }
+
+            reservations.forEach(reservation => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reservation.id}</td>
+                    <td>${reservation.guestFullName}</td>
+                    <td>${reservation.email}</td>
+                    <td>${reservation.roomType}</td>
+                    <td>${reservation.checkIn}</td>
+                    <td>${reservation.checkOut}</td>
+                    <td>${reservation.numberOfGuests}</td>
+                    <td><span class="status-badge status-${reservation.status}">${reservation.status}</span></td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewDetails(${reservation.id})">View</button>
+                        <button class="action-btn btn-delete" onclick="deleteReservation(${reservation.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allReservations.filter(reservation => 
+                reservation.guestFullName.toLowerCase().includes(searchTerm) ||
+                reservation.email.toLowerCase().includes(searchTerm) ||
+                reservation.id.toString().includes(searchTerm)
+            );
+            displayReservations(filtered);
+            document.getElementById('reservationCount').textContent = filtered.length + ' reservations found';
+        });
+
+        async function viewDetails(id) {
+            try {
+                const reservation = await API.get('/reservations/' + id);
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <div class="detail-row"><div class="detail-label">Reservation ID</div><div class="detail-value">#${reservation.id}</div></div>
+                    <div class="detail-row"><div class="detail-label">Guest Name</div><div class="detail-value">${reservation.guestFullName}</div></div>
+                    <div class="detail-row"><div class="detail-label">Email</div><div class="detail-value">${reservation.email}</div></div>
+                    <div class="detail-row"><div class="detail-label">Contact</div><div class="detail-value">${reservation.contactNumber}</div></div>
+                    <div class="detail-row"><div class="detail-label">Address</div><div class="detail-value">${reservation.address}</div></div>
+                    <div class="detail-row"><div class="detail-label">Room Type</div><div class="detail-value">${reservation.roomType}</div></div>
+                    <div class="detail-row"><div class="detail-label">Check-In</div><div class="detail-value">${reservation.checkIn}</div></div>
+                    <div class="detail-row"><div class="detail-label">Check-Out</div><div class="detail-value">${reservation.checkOut}</div></div>
+                    <div class="detail-row"><div class="detail-label">Guests</div><div class="detail-value">${reservation.numberOfGuests}</div></div>
+                    <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value"><span class="status-badge status-${reservation.status}">${reservation.status}</span></div></div>
+                    ${reservation.specialRequests ? '<div class="detail-row"><div class="detail-label">Special Requests</div><div class="detail-value">' + reservation.specialRequests + '</div></div>' : ''}
+                    <div class="detail-row"><div class="detail-label">Created</div><div class="detail-value">${new Date(reservation.createdAt).toLocaleString()}</div></div>
+                    <button class="btn btn-gold" onclick="window.location.href='billing.html?id=${reservation.id}'" style="margin-top: 24px; width: 100%;">View Bill</button>
+                `;
+                document.getElementById('detailModal').style.display = 'block';
+            } catch (error) {
+                alert('Error loading reservation details: ' + error.message);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        async function deleteReservation(id) {
+            if (!confirm('Are you sure you want to delete this reservation?')) return;
+            try {
+                await API.delete('/reservations/' + id);
+                alert('Reservation deleted successfully');
+                loadReservations();
+            } catch (error) {
+                alert('Error deleting reservation: ' + error.message);
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('detailModal')) closeModal();
+        }
+
+        loadReservations();
+    </script>
+</body>
+</html>

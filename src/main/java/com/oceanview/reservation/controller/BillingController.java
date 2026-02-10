@@ -11,16 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-/**
- * REST Controller for Billing operations.
- * 
- * Provides API endpoints for generating bills and calculating charges
- * for reservations.
- * 
- * @author Enzo
- * @version 1.0.0
- * @since 2026-02-10
- */
+// Handles billing API requests - generates bills for reservations
 @RestController
 @RequestMapping("/api/billing")
 @CrossOrigin(origins = "*")
@@ -31,44 +22,28 @@ public class BillingController {
     private final ReservationService reservationService;
     private final BillingService billingService;
 
-    /**
-     * Get billing details for a reservation.
-     * 
-     * GET /api/billing/{id}
-     * 
-     * Retrieves the reservation by ID and calculates complete billing details
-     * including room charges, service charges, taxes, and grand total.
-     * 
-     * @param id reservation ID
-     * @return billing details with 200 status, or 404 if reservation not found
-     */
+    // GET /api/billing/{id} - get billing details for a reservation
     @GetMapping("/{id}")
     public ResponseEntity<?> getBillingDetails(@PathVariable Long id) {
-        log.info("GET /api/billing/{} - Fetching billing details", id);
-        
+        log.info("Fetching billing for reservation {}", id);
+
         try {
-            // Load reservation by ID
             Optional<Reservation> reservationOpt = reservationService.getById(id);
-            
+
             if (reservationOpt.isEmpty()) {
                 log.warn("Reservation not found for billing: {}", id);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(new ErrorResponse("Reservation not found with ID: " + id));
             }
-            
+
             Reservation reservation = reservationOpt.get();
-            log.debug("Reservation found: {} - {}", id, reservation.getGuestFullName());
-            
-            // Calculate billing details
             BillingService.BillDetails billDetails = billingService.calculate(reservation);
-            
-            log.info("Billing calculated successfully for reservation {}: Total ${}", 
-                    id, billDetails.getGrandTotal());
-            
+
+            log.info("Bill generated for reservation {}: ${}", id, billDetails.getGrandTotal());
             return ResponseEntity.ok(billDetails);
             
         } catch (IllegalArgumentException e) {
-            log.error("Validation error calculating billing for reservation {}: {}", id, e.getMessage());
+            log.error("Validation error for reservation {}: {}", id, e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
@@ -78,9 +53,7 @@ public class BillingController {
         }
     }
 
-    /**
-     * Error response wrapper class.
-     */
+    // Error response wrapper
     private static class ErrorResponse {
         private final String error;
         private final long timestamp;
