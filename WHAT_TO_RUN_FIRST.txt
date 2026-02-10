@@ -1,0 +1,295 @@
+================================================================================
+        OCEANVIEW RESERVATION SYSTEM - QUICK START GUIDE
+================================================================================
+
+VERSION: 1.0.0
+DATE: February 10, 2026
+AUTHOR: Enzo
+
+This file contains the EXACT sequence of commands to build and run the 
+OceanView Reservation System.
+
+================================================================================
+PREREQUISITES (Verify First)
+================================================================================
+
+Before running, ensure you have:
+
+1. Java JDK 17 or higher
+   Command to check: java -version
+   Expected output: java version "17.0.x" or higher
+
+2. Apache Maven 3.6+ 
+   Command to check: mvn -v
+   Expected output: Apache Maven 3.9.x or higher
+
+3. Port 8080 available (application default port)
+   Command to check (Windows): netstat -ano | findstr :8080
+   If port is in use, stop the conflicting service or change port in 
+   src/main/resources/application.properties
+
+================================================================================
+EXACT SEQUENCE TO RUN THE APPLICATION
+================================================================================
+
+STEP 1: Navigate to Project Directory
+--------------------------------------
+cd C:\Users\Enzo\oceanview-reservation-system
+
+(Adjust path if your project is in a different location)
+
+
+STEP 2: Clean and Build the Project
+------------------------------------
+mvn clean package
+
+WHAT THIS DOES:
+- Cleans previous build artifacts
+- Compiles all Java source code
+- Runs all unit and integration tests
+- Packages application into executable JAR file
+- Creates: target/reservation-system-1.0.0-SNAPSHOT.jar
+
+EXPECTED OUTPUT:
+[INFO] BUILD SUCCESS
+[INFO] Total time: XX.XXX s
+
+IF BUILD FAILS:
+- Check that Java 17+ is installed
+- Check that Maven is configured correctly
+- Review error messages in console
+- Ensure pom.xml dependencies are complete
+
+
+STEP 3: Run the Application
+----------------------------
+mvn spring-boot:run
+
+WHAT THIS DOES:
+- Starts Spring Boot embedded Tomcat server
+- Initializes H2 in-memory database
+- Loads sample data (if DataLoader is implemented)
+- Exposes REST API endpoints
+- Serves static frontend files
+
+EXPECTED OUTPUT:
+Started OceanviewReservationApplication in X.XXX seconds (JVM running for X.XXX)
+
+WATCH FOR THIS LINE:
+Tomcat started on port(s): 8080 (http) with context path ''
+
+
+STEP 4: Access the Application in Browser
+------------------------------------------
+Open your web browser and navigate to:
+
+PRIMARY URL:
+http://localhost:8080/
+
+ALTERNATIVE ENTRY POINTS:
+- Login Page:     http://localhost:8080/login.html
+- Dashboard:      http://localhost:8080/dashboard.html
+- Home Page:      http://localhost:8080/index.html
+
+REST API BASE:
+http://localhost:8080/api/reservations
+
+H2 DATABASE CONSOLE:
+http://localhost:8080/h2-console
+
+H2 Console Login Credentials:
+- JDBC URL:  jdbc:h2:mem:oceanview
+- Username:  sa
+- Password:  (leave blank)
+
+
+STEP 5: Verify Application is Running
+--------------------------------------
+You should see:
+✓ Application console shows no errors
+✓ Browser displays the landing page or login page
+✓ No "Connection Refused" or "404 Not Found" errors
+
+
+STEP 6: Stop the Application (When Done)
+-----------------------------------------
+In the terminal where mvn spring-boot:run is running:
+- Press: Ctrl + C
+- Or close the terminal window
+
+EXPECTED OUTPUT:
+Shutdown completed
+
+================================================================================
+ALTERNATIVE METHOD: Run from JAR File
+================================================================================
+
+If you prefer to run the pre-built JAR directly:
+
+STEP 1: Build the JAR (if not already done)
+--------------------------------------------
+mvn clean package -DskipTests
+
+STEP 2: Run the JAR
+-------------------
+java -jar target/reservation-system-1.0.0-SNAPSHOT.jar
+
+STEP 3: Access Application
+---------------------------
+http://localhost:8080/
+
+STEP 4: Stop Application
+-------------------------
+Ctrl + C in the terminal
+
+================================================================================
+TESTING THE APPLICATION
+================================================================================
+
+RUN ALL TESTS:
+--------------
+mvn test
+
+EXPECTED OUTPUT:
+Tests run: XX, Failures: 0, Errors: 0, Skipped: 0
+
+
+RUN TESTS WITH COVERAGE:
+------------------------
+mvn clean test jacoco:report
+
+Coverage report location:
+target/site/jacoco/index.html
+
+Open in browser to view coverage statistics.
+
+================================================================================
+SAMPLE API REQUESTS (Using curl or Postman)
+================================================================================
+
+TEST 1: Get All Reservations
+-----------------------------
+curl -X GET http://localhost:8080/api/reservations
+
+Expected: JSON array of reservations (may be empty if no data loaded)
+
+
+TEST 2: Create a New Reservation
+---------------------------------
+curl -X POST http://localhost:8080/api/reservations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "guestFullName": "Test User",
+    "address": "123 Test St, Test City",
+    "contactNumber": "+1-555-0123",
+    "email": "test@example.com",
+    "roomType": "DOUBLE",
+    "checkIn": "2026-03-01",
+    "checkOut": "2026-03-05",
+    "numberOfGuests": 2
+  }'
+
+Expected: HTTP 201 Created with reservation JSON response
+
+
+TEST 3: Get Reservation by ID
+------------------------------
+curl -X GET http://localhost:8080/api/reservations/1
+
+Expected: HTTP 200 OK with single reservation JSON
+
+
+TEST 4: Health Check (if implemented)
+--------------------------------------
+curl -X GET http://localhost:8080/actuator/health
+
+Expected: {"status":"UP"}
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+PROBLEM: Port 8080 already in use
+SOLUTION 1: Stop the service using port 8080
+SOLUTION 2: Change port in application.properties:
+            Add line: server.port=8081
+            Then access: http://localhost:8081/
+
+PROBLEM: BUILD FAILURE - Dependencies not resolved
+SOLUTION: Check internet connection and Maven repository access
+          Run: mvn clean install -U
+
+PROBLEM: Application starts but pages show 404
+SOLUTION: Verify static files exist in src/main/resources/static/
+          Check browser console for errors
+
+PROBLEM: H2 Console shows "Connection refused"
+SOLUTION: Ensure H2 console is enabled in application.properties:
+          spring.h2.console.enabled=true
+
+PROBLEM: Tests fail during build
+SOLUTION: Review test output in terminal
+          Skip tests temporarily: mvn clean package -DskipTests
+          Fix test issues before production deployment
+
+PROBLEM: Java version mismatch
+SOLUTION: Ensure JAVA_HOME points to JDK 17+
+          Windows: echo %JAVA_HOME%
+          Update if necessary
+
+================================================================================
+FIRST-TIME SETUP COMPLETE CHECKLIST
+================================================================================
+
+Before running the application, verify:
+[ ] Java 17+ installed and configured
+[ ] Maven 3.6+ installed and on PATH
+[ ] Project directory accessible
+[ ] Port 8080 available
+[ ] pom.xml dependencies are complete (not placeholder)
+[ ] Java source files are implemented (not placeholder)
+[ ] application.properties configured correctly
+
+================================================================================
+QUICK REFERENCE - ONE-LINE COMMANDS
+================================================================================
+
+Build:           mvn clean package
+Run:             mvn spring-boot:run
+Test:            mvn test
+Run JAR:         java -jar target/reservation-system-1.0.0-SNAPSHOT.jar
+Coverage:        mvn clean test jacoco:report
+Skip Tests:      mvn clean package -DskipTests
+Clean All:       mvn clean
+
+================================================================================
+NEXT STEPS AFTER FIRST RUN
+================================================================================
+
+1. Test all frontend pages (index, login, dashboard, etc.)
+2. Test all API endpoints using Postman or curl
+3. Verify H2 console access and view data
+4. Run complete test suite and check coverage
+5. Review application logs for any warnings or errors
+6. Test reservation creation, viewing, updating, deletion
+7. Test billing calculations
+8. Verify authentication (if implemented)
+9. Test error handling (invalid inputs, missing data)
+10. Deploy to production environment (optional)
+
+================================================================================
+SUPPORT & DOCUMENTATION
+================================================================================
+
+- Full Documentation: README.md
+- API Specification: docs/api.md
+- Test Plan: docs/test-plan.md
+- Deployment Guide: docs/deployment.md
+- Architecture: docs/architecture.md
+- Submission Checklist: docs/submission-checklist.md
+
+For additional help, refer to the complete documentation in the docs/ folder.
+
+================================================================================
+END OF QUICK START GUIDE
+================================================================================
