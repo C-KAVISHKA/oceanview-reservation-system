@@ -1,1 +1,310 @@
-<!-- TODO: New reservation form page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Reservation - OceanView Reservation System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .reservation-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="reservation-container">
+            <h1>New Reservation</h1>
+            <p style="color: #666; margin-bottom: 30px;">Create a new room reservation for a guest</p>
+            
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            
+            <form id="reservationForm" class="reservation-form">
+                <h3>Guest Information</h3>
+                
+                <div class="form-group">
+                    <label for="guestFullName">Full Name *</label>
+                    <input 
+                        type="text" 
+                        id="guestFullName" 
+                        name="guestFullName" 
+                        required 
+                        minlength="2"
+                        maxlength="100"
+                        placeholder="John Smith">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required 
+                        maxlength="100"
+                        placeholder="john.smith@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactNumber">Contact Number *</label>
+                    <input 
+                        type="tel" 
+                        id="contactNumber" 
+                        name="contactNumber" 
+                        required 
+                        pattern="^\+?[0-9\-\s()]{7,20}$"
+                        placeholder="+1-555-0101">
+                    <small style="color: #666;">Format: +1-555-0101 or (555) 555-5555</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address *</label>
+                    <input 
+                        type="text" 
+                        id="address" 
+                        name="address" 
+                        required 
+                        maxlength="255"
+                        placeholder="123 Main Street, City, State 12345">
+                </div>
+                
+                <h3 style="margin-top: 30px;">Reservation Details</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="checkIn">Check-In Date *</label>
+                        <input 
+                            type="date" 
+                            id="checkIn" 
+                            name="checkIn" 
+                            required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="checkOut">Check-Out Date *</label>
+                        <input 
+                            type="date" 
+                            id="checkOut" 
+                            name="checkOut" 
+                            required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="roomType">Room Type *</label>
+                        <select id="roomType" name="roomType" required>
+                            <option value="">Select room type</option>
+                            <option value="SINGLE">Single ($100/night)</option>
+                            <option value="DOUBLE">Double ($150/night)</option>
+                            <option value="SUITE">Suite ($250/night)</option>
+                            <option value="DELUXE">Deluxe ($400/night)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="numberOfGuests">Number of Guests *</label>
+                        <input 
+                            type="number" 
+                            id="numberOfGuests" 
+                            name="numberOfGuests" 
+                            required 
+                            min="1" 
+                            max="10"
+                            value="1">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="specialRequests">Special Requests (Optional)</label>
+                    <textarea 
+                        id="specialRequests" 
+                        name="specialRequests" 
+                        maxlength="500"
+                        placeholder="Any special requests or requirements..."></textarea>
+                    <small style="color: #666;">Maximum 500 characters</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Create Reservation</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // Get form elements
+        const reservationForm = document.getElementById('reservationForm');
+        const checkInInput = document.getElementById('checkIn');
+        const checkOutInput = document.getElementById('checkOut');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        checkInInput.min = today;
+        checkOutInput.min = today;
+
+        // Update checkout min date when checkin changes
+        checkInInput.addEventListener('change', function() {
+            checkOutInput.min = this.value;
+            if (checkOutInput.value && checkOutInput.value <= this.value) {
+                checkOutInput.value = '';
+            }
+        });
+
+        /**
+         * Display success message
+         * @param {string} message - Success message to display
+         */
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            window.scrollTo(0, 0);
+        }
+
+        /**
+         * Display error message
+         * @param {string} message - Error message to display
+         */
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            window.scrollTo(0, 0);
+        }
+
+        /**
+         * Hide all messages
+         */
+        function hideMessages() {
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+        }
+
+        /**
+         * Validate that check-out date is after check-in date
+         * @param {string} checkIn - Check-in date string
+         * @param {string} checkOut - Check-out date string
+         * @returns {boolean} true if valid, false otherwise
+         */
+        function validateDates(checkIn, checkOut) {
+            const checkInDate = new Date(checkIn);
+            const checkOutDate = new Date(checkOut);
+            return checkOutDate > checkInDate;
+        }
+
+        /**
+         * Handle form submission
+         * @param {Event} event - Form submit event
+         */
+        async function handleSubmit(event) {
+            // Prevent default form submission
+            event.preventDefault();
+            
+            // Hide previous messages
+            hideMessages();
+            
+            // Get form values
+            const guestFullName = document.getElementById('guestFullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const contactNumber = document.getElementById('contactNumber').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const checkIn = checkInInput.value;
+            const checkOut = checkOutInput.value;
+            const roomType = document.getElementById('roomType').value;
+            const numberOfGuests = parseInt(document.getElementById('numberOfGuests').value);
+            const specialRequests = document.getElementById('specialRequests').value.trim();
+            
+            // Client-side validation: check-out must be after check-in
+            if (!validateDates(checkIn, checkOut)) {
+                showError('Check-out date must be after check-in date');
+                return;
+            }
+            
+            // Build JSON payload matching Reservation DTO
+            const payload = {
+                guestFullName: guestFullName,
+                email: email,
+                contactNumber: contactNumber,
+                address: address,
+                checkIn: checkIn,
+                checkOut: checkOut,
+                roomType: roomType,
+                numberOfGuests: numberOfGuests
+            };
+            
+            // Add special requests only if provided
+            if (specialRequests) {
+                payload.specialRequests = specialRequests;
+            }
+            
+            try {
+                // Disable submit button
+                const submitButton = reservationForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Creating Reservation...';
+                
+                // Call API to create reservation
+                const response = await API.post('/reservations', payload);
+                
+                // Display success message with reservation ID
+                showSuccess(`Reservation created successfully! Reservation ID: ${response.id}`);
+                
+                // Reset form
+                reservationForm.reset();
+                
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create Reservation';
+                
+                console.log('Reservation created:', response);
+                
+            } catch (error) {
+                // Handle errors
+                console.error('Reservation creation error:', error);
+                
+                // Re-enable submit button
+                const submitButton = reservationForm.querySelector('button[type="submit"]');
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create Reservation';
+                
+                // Display error message
+                if (error.status === 400) {
+                    showError('Validation error: ' + error.message);
+                } else if (error.message) {
+                    showError('Error: ' + error.message);
+                } else {
+                    showError('Failed to create reservation. Please try again.');
+                }
+            }
+        }
+
+        // Attach event listener to form
+        reservationForm.addEventListener('submit', handleSubmit);
+
+        // Check if user is logged in (optional, for future use)
+        const token = sessionStorage.getItem('authToken');
+        if (!token) {
+            console.warn('No authentication token found. API may require authentication.');
+        }
+    </script>
+</body>
+</html>
+
