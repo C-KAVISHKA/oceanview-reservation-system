@@ -1,43 +1,255 @@
 @startuml classes
 title OceanView Reservation System - Class Diagram
 
-' TODO: Add entity classes
+' Entity Classes
 class Reservation {
   - id: Long
-  - guestName: String
-  - checkInDate: LocalDate
-  - checkOutDate: LocalDate
-  - roomNumber: String
-  - status: String
+  - guestFullName: String
+  - address: String
+  - contactNumber: String
+  - email: String
+  - roomType: RoomType
+  - checkIn: LocalDate
+  - checkOut: LocalDate
+  - numberOfGuests: Integer
+  - specialRequests: String
+  - status: ReservationStatus
+  - totalAmount: BigDecimal
+  - createdAt: LocalDateTime
+  - updatedAt: LocalDateTime
+  --
+  + getId(): Long
+  + setId(Long): void
+  + getGuestFullName(): String
+  + setGuestFullName(String): void
+  + calculateTotalAmount(): BigDecimal
+  + getNumberOfNights(): Integer
 }
 
-' TODO: Add service classes
+class Guest {
+  - id: Long
+  - fullName: String
+  - email: String
+  - contactNumber: String
+  - address: String
+  - registrationDate: LocalDateTime
+  --
+  + getId(): Long
+  + getFullName(): String
+  + getEmail(): String
+  + validateEmail(): boolean
+}
+
+class User {
+  - id: Long
+  - email: String
+  - password: String
+  - fullName: String
+  - role: UserRole
+  - active: boolean
+  --
+  + authenticate(String): boolean
+  + hasRole(UserRole): boolean
+}
+
+class Bill {
+  - billId: Long
+  - reservationId: Long
+  - guestFullName: String
+  - roomType: String
+  - numberOfNights: Integer
+  - roomRate: BigDecimal
+  - subtotal: BigDecimal
+  - tax: BigDecimal
+  - serviceCharge: BigDecimal
+  - totalAmount: BigDecimal
+  - generatedAt: LocalDateTime
+  --
+  + calculateTax(): BigDecimal
+  + calculateServiceCharge(): BigDecimal
+}
+
+' Enums
+enum RoomType {
+  SINGLE
+  DOUBLE
+  SUITE
+  DELUXE
+  --
+  + getBaseRate(): BigDecimal
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+}
+
+enum UserRole {
+  GUEST
+  STAFF
+  MANAGER
+}
+
+' Service Classes
 class ReservationService {
-  + createReservation()
-  + getReservation()
-  + updateReservation()
-  + deleteReservation()
+  - reservationRepository: ReservationRepository
+  - billingCalculator: BillingCalculator
+  --
+  + createReservation(ReservationDTO): Reservation
+  + getReservationById(Long): Reservation
+  + getAllReservations(): List<Reservation>
+  + updateReservation(Long, ReservationDTO): Reservation
+  + deleteReservation(Long): void
+  + validateReservation(ReservationDTO): void
+  + checkRoomAvailability(RoomType, LocalDate, LocalDate): boolean
 }
 
-' TODO: Add controller classes
-class ReservationController {
-  + POST /api/reservations
-  + GET /api/reservations/{id}
-  + PUT /api/reservations/{id}
-  + DELETE /api/reservations/{id}
+class BillingService {
+  - billingCalculator: BillingCalculator
+  - reservationRepository: ReservationRepository
+  --
+  + generateBill(Long): Bill
+  + calculateTotal(Reservation): BigDecimal
 }
 
-' TODO: Add repository interfaces
+class AuthService {
+  - userRepository: UserRepository
+  - authManager: AuthManager
+  --
+  + login(String, String): AuthToken
+  + validateToken(String): boolean
+  + getCurrentUser(): User
+}
+
+class ReportService {
+  - reservationRepository: ReservationRepository
+  --
+  + getOccupancyReport(LocalDate): OccupancyReport
+  + getRevenueReport(LocalDate, LocalDate): RevenueReport
+  + calculateOccupancyRate(LocalDate): BigDecimal
+}
+
+' Utility Classes
+class BillingCalculator {
+  - TAX_RATE: BigDecimal
+  - SERVICE_CHARGE_RATE: BigDecimal
+  --
+  + calculateRoomCharges(Reservation): BigDecimal
+  + calculateTax(BigDecimal): BigDecimal
+  + calculateServiceCharge(BigDecimal): BigDecimal
+  + calculateTotal(Reservation): BigDecimal
+  + getNumberOfNights(LocalDate, LocalDate): Integer
+}
+
+class AuthManager {
+  - jwtSecret: String
+  - tokenExpiration: Integer
+  --
+  + generateToken(User): String
+  + validateToken(String): boolean
+  + extractUserFromToken(String): User
+  + encryptPassword(String): String
+  + verifyPassword(String, String): boolean
+}
+
+' Repository Interfaces
 interface ReservationRepository {
-  + save()
-  + findById()
-  + findAll()
-  + deleteById()
+  + save(Reservation): Reservation
+  + findById(Long): Optional<Reservation>
+  + findAll(): List<Reservation>
+  + deleteById(Long): void
+  + findByStatus(ReservationStatus): List<Reservation>
+  + findByGuestEmail(String): List<Reservation>
+  + findByDateRange(LocalDate, LocalDate): List<Reservation>
 }
 
-' TODO: Define relationships
-ReservationController --> ReservationService
-ReservationService --> ReservationRepository
-ReservationRepository --> Reservation
+interface UserRepository {
+  + save(User): User
+  + findById(Long): Optional<User>
+  + findByEmail(String): Optional<User>
+  + findAll(): List<User>
+}
+
+' Controller Classes
+class ReservationController {
+  - reservationService: ReservationService
+  --
+  + createReservation(ReservationDTO): ResponseEntity
+  + getReservation(Long): ResponseEntity
+  + getAllReservations(): ResponseEntity
+  + updateReservation(Long, ReservationDTO): ResponseEntity
+  + deleteReservation(Long): ResponseEntity
+}
+
+class AuthController {
+  - authService: AuthService
+  --
+  + login(LoginDTO): ResponseEntity
+  + logout(): ResponseEntity
+  + getCurrentUser(): ResponseEntity
+}
+
+class BillingController {
+  - billingService: BillingService
+  --
+  + getBill(Long): ResponseEntity
+}
+
+class ReportController {
+  - reportService: ReportService
+  --
+  + getOccupancyReport(LocalDate): ResponseEntity
+  + getRevenueReport(LocalDate, LocalDate): ResponseEntity
+}
+
+' Relationships
+Reservation --> RoomType : uses
+Reservation --> ReservationStatus : has
+Reservation --> Guest : belongs to
+User --> UserRole : has
+
+ReservationController --> ReservationService : uses
+ReservationService --> ReservationRepository : uses
+ReservationService --> BillingCalculator : uses
+ReservationRepository ..> Reservation : manages
+
+BillingController --> BillingService : uses
+BillingService --> BillingCalculator : uses
+BillingService --> ReservationRepository : uses
+BillingService ..> Bill : creates
+
+AuthController --> AuthService : uses
+AuthService --> UserRepository : uses
+AuthService --> AuthManager : uses
+UserRepository ..> User : manages
+
+ReportController --> ReportService : uses
+ReportService --> ReservationRepository : uses
+
+BillingCalculator ..> Reservation : calculates for
+Bill --> Reservation : generated from
+
+note right of BillingCalculator
+  Responsible for all
+  billing calculations
+  including taxes and
+  service charges
+end note
+
+note left of AuthManager
+  Handles authentication,
+  token generation/validation,
+  and password encryption
+end note
+
+note bottom of ReservationService
+  Core business logic for
+  reservation management
+  including validation and
+  room availability checks
+end note
 
 @enduml

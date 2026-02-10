@@ -5,24 +5,69 @@ left to right direction
 skinparam packageStyle rectangle
 
 actor Guest as guest
-actor "Registered User" as user
-actor Administrator as admin
+actor Staff as staff
+actor Manager as manager
 
 rectangle "OceanView Reservation System" {
-  usecase (View Available Rooms) as UC1
-  usecase (Make Reservation) as UC2
-  usecase (Cancel Reservation) as UC3
-  usecase (View Reservation History) as UC4
-  usecase (Manage Rooms) as UC5
-  usecase (Manage Users) as UC6
+  usecase (Login) as UC1
+  usecase (Create Reservation) as UC2
+  usecase (View Reservation) as UC3
+  usecase (Modify Reservation) as UC4
+  usecase (Cancel Reservation) as UC5
+  usecase (Print Bill) as UC6
+  usecase (Run Reports) as UC7
+  usecase (View Occupancy Report) as UC7a
+  usecase (View Revenue Report) as UC7b
+  usecase (Help) as UC8
+  usecase (Manage Users) as UC9
 }
 
-guest --> UC1
-user --> UC1
-user --> UC2
-user --> UC3
-user --> UC4
-admin --> UC5
-admin --> UC6
+' Guest relationships
+guest --> UC2 : make reservation
+guest --> UC3 : view reservation
+guest --> UC8 : access help
+
+' Staff relationships
+staff --> UC1 : authenticate
+staff --> UC2 : create reservation
+staff --> UC3 : view reservation
+staff --> UC4 : modify reservation
+staff --> UC5 : cancel reservation
+staff --> UC6 : print bill
+staff --> UC8 : access help
+
+' Manager relationships
+manager --> UC1 : authenticate
+manager --> UC2 : create reservation
+manager --> UC3 : view reservation
+manager --> UC4 : modify reservation
+manager --> UC5 : cancel reservation
+manager --> UC6 : print bill
+manager --> UC7 : run reports
+manager --> UC9 : manage users
+manager --> UC8 : access help
+
+' Report extensions
+UC7 <.. UC7a : <<extends>>
+UC7 <.. UC7b : <<extends>>
+
+' Authentication dependencies
+UC2 ..> UC1 : <<requires>> (for staff/manager)
+UC4 ..> UC1 : <<requires>>
+UC5 ..> UC1 : <<requires>>
+UC7 ..> UC1 : <<requires>>
+UC9 ..> UC1 : <<requires>>
+
+note right of UC7
+  Managers can generate
+  occupancy and revenue
+  reports for analytics
+end note
+
+note left of UC2
+  Guests can make reservations
+  without authentication,
+  Staff/Manager require login
+end note
 
 @enduml

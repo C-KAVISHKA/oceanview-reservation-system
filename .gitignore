@@ -45,3 +45,6 @@ application-secrets.properties
 *.bak
 *.swp
 *~
+
+# PlantUML
+*.jar
