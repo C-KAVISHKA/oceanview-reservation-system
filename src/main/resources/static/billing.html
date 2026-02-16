@@ -110,6 +110,10 @@
             </div>
 
             <button class="btn btn-primary no-print" onclick="window.print()" style="margin-top: 24px;">Print Bill</button>
+            <button class="btn btn-gold no-print" id="confirmBillBtn" onclick="confirmBill()" style="margin-top: 24px; margin-left: 12px; display: none;">Confirm Bill</button>
+            <div id="confirmedBadge" style="display: none; margin-top: 24px; padding: 12px 24px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: var(--radius-sm); text-align: center; font-weight: 600; font-size: 1rem;">
+                ✅ Bill Confirmed
+            </div>
         </div>
 
         <div class="page-footer no-print">
@@ -186,6 +190,20 @@
                 document.getElementById('grandTotalAmount').textContent = '$' + grandTotal.toFixed(2);
                 document.getElementById('billDate').textContent = new Date().toLocaleString();
                 
+                // Show or hide confirm button based on reservation status
+                const confirmBtn = document.getElementById('confirmBillBtn');
+                const confirmedBadge = document.getElementById('confirmedBadge');
+                if (reservation.status === 'CONFIRMED') {
+                    confirmBtn.style.display = 'none';
+                    confirmedBadge.style.display = 'block';
+                } else {
+                    confirmBtn.style.display = 'inline-block';
+                    confirmedBadge.style.display = 'none';
+                }
+                
+                // Store reservation ID for confirm action
+                window.currentReservationId = reservation.id;
+                
                 billSection.style.display = 'block';
             } catch (error) {
                 console.error('Error generating bill:', error);
@@ -197,6 +215,25 @@
         document.getElementById('reservationIdInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') generateBill();
         });
+
+        async function confirmBill() {
+            if (!window.currentReservationId) return;
+            
+            if (!confirm('Are you sure you want to confirm this bill?')) return;
+            
+            try {
+                await API.patch('/reservations/' + window.currentReservationId + '/status', { status: 'CONFIRMED' });
+                
+                // Hide confirm button and show confirmed badge
+                document.getElementById('confirmBillBtn').style.display = 'none';
+                document.getElementById('confirmedBadge').style.display = 'block';
+                
+                alert('Bill confirmed successfully! The reservation status has been updated.');
+            } catch (error) {
+                console.error('Error confirming bill:', error);
+                alert('Error confirming bill: ' + (error.message || 'Something went wrong'));
+            }
+        }
     </script>
 </body>
 </html>

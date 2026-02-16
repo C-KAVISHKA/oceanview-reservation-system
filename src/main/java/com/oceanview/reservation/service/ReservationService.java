@@ -146,6 +146,11 @@ public class ReservationService {
         return savedReservation;
     }
 
+    // Save a reservation directly (used for status-only updates)
+    public Reservation save(Reservation reservation) {
+        return reservationRepository.save(reservation);
+    }
+
     // Delete a reservation by ID
     public void delete(Long id) {
         log.info("Deleting reservation {}", id);

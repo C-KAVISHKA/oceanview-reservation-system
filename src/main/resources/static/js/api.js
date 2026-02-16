@@ -79,6 +79,17 @@ const API = {
         return this.handleResponse(response);
     },
 
+    // PATCH request
+    async patch(path, body) {
+        const url = this.baseURL + path;
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: this.buildHeaders(),
+            body: JSON.stringify(body)
+        });
+        return this.handleResponse(response);
+    },
+
     // DELETE request
     async delete(path) {
         const url = this.baseURL + path;
