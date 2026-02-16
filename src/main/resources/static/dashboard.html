@@ -33,10 +33,10 @@
 
     <!-- Page Content -->
     <div class="page-content">
-        <div class="page-header">
-            <h1>Welcome to OceanView Resort</h1>
+        <div class="page-header welcome-greeting">
+            <h1 id="greetingText">Welcome to OceanView Resort</h1>
             <div class="wave-divider"></div>
-            <p>Manage reservations, billing, and reports from your dashboard.</p>
+            <p class="greeting-time" id="greetingTime"></p>
         </div>
 
         <!-- Navigation Cards -->
@@ -77,20 +77,55 @@
         <div class="wave-divider"></div>
         <div class="stats-grid">
             <div class="stat-card">
+                <span class="stat-icon">📊</span>
                 <p>Total Reservations</p>
                 <h3 id="totalReservations">-</h3>
             </div>
             <div class="stat-card">
+                <span class="stat-icon">✅</span>
                 <p>Confirmed</p>
                 <h3 id="confirmedReservations">-</h3>
             </div>
             <div class="stat-card">
+                <span class="stat-icon">⏳</span>
                 <p>Pending</p>
                 <h3 id="pendingReservations">-</h3>
             </div>
             <div class="stat-card">
+                <span class="stat-icon">🛬</span>
                 <p>Today's Check-ins</p>
                 <h3 id="todayCheckIns">-</h3>
+            </div>
+        </div>
+
+        <!-- Recent Reservations -->
+        <div class="recent-activity" style="margin-top: 40px;">
+            <h2 style="margin-bottom: 20px;">Recent Reservations</h2>
+            <div class="wave-divider"></div>
+            <div class="card card-elevated" style="padding: var(--space-lg);">
+                <div id="recentLoading" style="text-align: center; padding: 20px; color: var(--gray-500);">
+                    <div class="spinner"></div>
+                    Loading recent reservations...
+                </div>
+                <div class="table-wrapper">
+                    <table id="recentTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Guest</th>
+                                <th>Room</th>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentBody"></tbody>
+                    </table>
+                </div>
+                <div id="noRecentMsg" style="display: none; text-align: center; padding: 20px; color: var(--gray-500);">
+                    No reservations yet. <a href="new-reservation.html" style="color: var(--ocean-mid); font-weight: 600;">Create one now</a>
+                </div>
             </div>
         </div>
 
@@ -103,6 +138,18 @@
     <script>
         const userName = sessionStorage.getItem('userName') || sessionStorage.getItem('userEmail') || 'Staff';
         document.getElementById('userName').textContent = userName;
+
+        // Time-based greeting
+        const hour = new Date().getHours();
+        let greeting = 'Good Evening';
+        let emoji = '🌙';
+        if (hour < 12) { greeting = 'Good Morning'; emoji = '☀️'; }
+        else if (hour < 17) { greeting = 'Good Afternoon'; emoji = '🌤️'; }
+
+        document.getElementById('greetingText').textContent = `${emoji} ${greeting}, ${userName}!`;
+        document.getElementById('greetingTime').textContent = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+        });
 
         function logout() {
             sessionStorage.clear();
@@ -123,8 +170,33 @@
                 const today = new Date().toISOString().split('T')[0];
                 const todayCheckIns = reservations.filter(r => r.checkIn === today).length;
                 document.getElementById('todayCheckIns').textContent = todayCheckIns;
+
+                // Recent reservations (last 5)
+                const sorted = [...reservations].sort((a, b) => b.id - a.id);
+                const recent = sorted.slice(0, 5);
+
+                document.getElementById('recentLoading').style.display = 'none';
+
+                if (recent.length === 0) {
+                    document.getElementById('noRecentMsg').style.display = 'block';
+                } else {
+                    const tbody = document.getElementById('recentBody');
+                    tbody.innerHTML = recent.map(r => `
+                        <tr>
+                            <td>#${r.id}</td>
+                            <td>${r.guestFullName}</td>
+                            <td>${r.roomType}</td>
+                            <td>${r.checkIn}</td>
+                            <td>${r.checkOut}</td>
+                            <td><span class="status-badge status-${r.status}">${r.status}</span></td>
+                            <td><button class="action-btn btn-view" onclick="window.location.href='billing.html?id=${r.id}'">View Bill</button></td>
+                        </tr>
+                    `).join('');
+                    document.getElementById('recentTable').style.display = 'table';
+                }
             } catch (error) {
                 console.error('Error loading stats:', error);
+                document.getElementById('recentLoading').innerHTML = '<p style="color: var(--sunset-coral);">Could not load data</p>';
             }
         }
 

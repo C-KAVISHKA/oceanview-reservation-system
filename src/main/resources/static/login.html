@@ -8,9 +8,19 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="page-login">
+    <!-- Floating bubbles background -->
+    <div class="bubble" style="width: 20px; height: 20px; left: 10%; animation-duration: 12s; animation-delay: 0s;"></div>
+    <div class="bubble" style="width: 40px; height: 40px; left: 25%; animation-duration: 15s; animation-delay: 2s;"></div>
+    <div class="bubble" style="width: 15px; height: 15px; left: 40%; animation-duration: 10s; animation-delay: 4s;"></div>
+    <div class="bubble" style="width: 30px; height: 30px; left: 55%; animation-duration: 18s; animation-delay: 1s;"></div>
+    <div class="bubble" style="width: 25px; height: 25px; left: 70%; animation-duration: 14s; animation-delay: 3s;"></div>
+    <div class="bubble" style="width: 35px; height: 35px; left: 85%; animation-duration: 16s; animation-delay: 5s;"></div>
+    <div class="bubble" style="width: 18px; height: 18px; left: 5%; animation-duration: 13s; animation-delay: 6s;"></div>
+    <div class="bubble" style="width: 28px; height: 28px; left: 92%; animation-duration: 11s; animation-delay: 7s;"></div>
+
     <div class="container">
         <div class="login-container">
-            <div class="brand-logo">🌊</div>
+            <div class="brand-logo" style="animation: float 3s ease-in-out infinite;">🌊</div>
             <h1>OceanView Resort</h1>
             <h2>Staff Portal</h2>
             
@@ -39,7 +49,9 @@
                 
                 <div id="errorMessage" class="error-message" style="display: none;"></div>
                 
-                <button type="submit" class="btn btn-primary">Sign In</button>
+                <button type="submit" class="btn btn-primary" style="margin-top: 8px; font-size: 1rem; padding: 14px 28px; letter-spacing: 0.5px;">
+                    <span id="btnIcon">🔐</span> Sign In
+                </button>
             </form>
             
             <div class="demo-info">
@@ -82,7 +94,7 @@
             try {
                 const submitButton = loginForm.querySelector('button[type="submit"]');
                 submitButton.disabled = true;
-                submitButton.textContent = 'Signing in...';
+                submitButton.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;margin:0;display:inline-block;vertical-align:middle;"></span> Signing in...';
                 
                 const response = await API.post('/auth/login', {
                     email: email,
@@ -104,7 +116,7 @@
                 console.error('Login error:', error);
                 const submitButton = loginForm.querySelector('button[type="submit"]');
                 submitButton.disabled = false;
-                submitButton.textContent = 'Sign In';
+                submitButton.innerHTML = '<span id="btnIcon">🔐</span> Sign In';
                 
                 if (error.status === 401) {
                     showError('Invalid email or password. Please try again.');
