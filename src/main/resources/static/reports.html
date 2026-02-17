@@ -243,7 +243,7 @@
                     return r.checkIn >= fromDate && r.checkIn <= toDate && r.status !== 'CANCELLED';
                 });
 
-                const roomRates = { 'SINGLE': 100, 'DOUBLE': 150, 'SUITE': 250, 'DELUXE': 400 };
+                const roomRates = { 'SINGLE': 30000, 'DOUBLE': 45000, 'SUITE': 75000, 'DELUXE': 120000 };
 
                 const revenueData = relevantReservations.map(r => {
                     const checkIn = new Date(r.checkIn);
@@ -260,15 +260,15 @@
                 const totalReservations = revenueData.length;
                 const averageRevenue = totalReservations > 0 ? totalRevenue / totalReservations : 0;
 
-                document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+                document.getElementById('totalRevenue').textContent = 'LKR ' + totalRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 document.getElementById('totalReservations').textContent = totalReservations;
-                document.getElementById('averageRevenue').textContent = '$' + averageRevenue.toFixed(2);
+                document.getElementById('averageRevenue').textContent = 'LKR ' + averageRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
                 const roomTypes = ['SINGLE', 'DOUBLE', 'SUITE', 'DELUXE'];
                 document.getElementById('roomTypeRevenue').innerHTML = roomTypes.map(type => {
                     const typeData = revenueData.filter(r => r.roomType === type);
                     const typeRevenue = typeData.reduce((sum, r) => sum + r.revenue, 0);
-                    return '<tr><td>' + type + '</td><td>' + typeData.length + '</td><td style="text-align:right">$' + typeRevenue.toFixed(2) + '</td></tr>';
+                    return '<tr><td>' + type + '</td><td>' + typeData.length + '</td><td style="text-align:right">LKR ' + typeRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</td></tr>';
                 }).join('');
 
                 const dailyData = {};
@@ -279,7 +279,7 @@
                 });
 
                 const dailyHtml = Object.keys(dailyData).sort().map(date => {
-                    return '<tr><td>' + date + '</td><td>' + dailyData[date].count + '</td><td style="text-align:right">$' + dailyData[date].revenue.toFixed(2) + '</td></tr>';
+                    return '<tr><td>' + date + '</td><td>' + dailyData[date].count + '</td><td style="text-align:right">LKR ' + dailyData[date].revenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</td></tr>';
                 }).join('');
 
                 document.getElementById('dailyRevenue').innerHTML = dailyHtml || '<tr><td colspan="3" style="text-align:center; color: var(--gray-500);">No data available</td></tr>';

@@ -88,19 +88,19 @@
             <div class="total-section">
                 <div class="total-row">
                     <span>Subtotal</span>
-                    <span id="subtotalAmount">$0.00</span>
+                    <span id="subtotalAmount">LKR 0.00</span>
                 </div>
                 <div class="total-row">
                     <span>Service Charge (5%)</span>
-                    <span id="serviceChargeAmount">$0.00</span>
+                    <span id="serviceChargeAmount">LKR 0.00</span>
                 </div>
                 <div class="total-row">
                     <span>Tax (8%)</span>
-                    <span id="taxAmount">$0.00</span>
+                    <span id="taxAmount">LKR 0.00</span>
                 </div>
                 <div class="total-row grand-total">
                     <span>Grand Total</span>
-                    <span id="grandTotalAmount">$0.00</span>
+                    <span id="grandTotalAmount">LKR 0.00</span>
                 </div>
             </div>
 
@@ -168,15 +168,15 @@
                     <div class="info-row"><span class="info-label">Guests</span><span class="info-value">${reservation.numberOfGuests}</span></div>
                 `;
                 
-                const roomRates = { 'SINGLE': 100, 'DOUBLE': 150, 'SUITE': 250, 'DELUXE': 400 };
+                const roomRates = { 'SINGLE': 30000, 'DOUBLE': 45000, 'SUITE': 75000, 'DELUXE': 120000 };
                 const ratePerNight = roomRates[reservation.roomType] || 0;
                 const roomSubtotal = ratePerNight * nights;
                 
                 document.getElementById('chargesBody').innerHTML = `
                     <tr>
                         <td>Room Charges</td>
-                        <td>${reservation.roomType} &mdash; ${nights} night(s) x $${ratePerNight}</td>
-                        <td style="text-align: right;">$${roomSubtotal.toFixed(2)}</td>
+                        <td>${reservation.roomType} &mdash; ${nights} night(s) x LKR ${ratePerNight.toLocaleString()}</td>
+                        <td style="text-align: right;">LKR ${roomSubtotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     </tr>
                 `;
                 
@@ -184,10 +184,10 @@
                 const tax = roomSubtotal * 0.08;
                 const grandTotal = roomSubtotal + serviceCharge + tax;
                 
-                document.getElementById('subtotalAmount').textContent = '$' + roomSubtotal.toFixed(2);
-                document.getElementById('serviceChargeAmount').textContent = '$' + serviceCharge.toFixed(2);
-                document.getElementById('taxAmount').textContent = '$' + tax.toFixed(2);
-                document.getElementById('grandTotalAmount').textContent = '$' + grandTotal.toFixed(2);
+                document.getElementById('subtotalAmount').textContent = 'LKR ' + roomSubtotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('serviceChargeAmount').textContent = 'LKR ' + serviceCharge.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('taxAmount').textContent = 'LKR ' + tax.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('grandTotalAmount').textContent = 'LKR ' + grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 document.getElementById('billDate').textContent = new Date().toLocaleString();
                 
                 // Show or hide confirm button based on reservation status
