@@ -18,101 +18,132 @@
             </div>
         </a>
         <div class="topbar-nav">
-            <a href="dashboard.html">Dashboard</a>
-            <a href="new-reservation.html">New Booking</a>
-            <a href="view-reservation.html">Reservations</a>
-            <a href="billing.html" class="active">Billing</a>
-            <a href="reports.html">Reports</a>
-            <a href="help.html">Help</a>
+            <a href="dashboard.html">🏠 Dashboard</a>
+            <a href="new-reservation.html">➕ New Booking</a>
+            <a href="view-reservation.html">📋 Reservations</a>
+            <a href="billing.html" class="active">💳 Billing</a>
+            <a href="reports.html">📊 Reports</a>
+            <a href="help.html">❓ Help</a>
         </div>
         <div class="topbar-right">
-            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">Logout</button>
+            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">🚪 Logout</button>
         </div>
     </nav>
 
-    <div class="page-content" style="max-width: 900px;">
-        <div class="page-header no-print">
-            <h1>Billing & Invoices</h1>
-            <div class="wave-divider"></div>
-            <p>Generate and print bills for reservations</p>
+    <!-- Page Banner -->
+    <div class="page-banner no-print">
+        <div class="page-banner-content">
+            <div class="page-banner-icon">💳</div>
+            <div>
+                <h1 class="page-banner-title">Billing & Invoices</h1>
+                <p class="page-banner-sub">Generate and print bills for reservations</p>
+            </div>
         </div>
+        <div class="page-banner-wave"></div>
+    </div>
+
+    <div class="page-content" style="max-width: 900px;">
 
         <!-- Search Section -->
-        <div class="card no-print" style="margin-bottom: 24px;">
-            <h2 style="margin-bottom: 16px;">Generate Bill</h2>
-            <p style="color: var(--gray-500); margin-bottom: 16px;">Enter a reservation ID to generate the bill</p>
-            
-            <div style="display: flex; gap: 12px;">
-                <input type="number" id="reservationIdInput" placeholder="Enter Reservation ID" 
-                       style="flex: 1; padding: 12px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 0.95rem; font-family: var(--font-body);">
-                <button class="btn btn-gold" onclick="generateBill()" style="width: auto;">Generate Bill</button>
+        <div class="card card-elevated no-print" style="margin-bottom: 28px; overflow: hidden;">
+            <div class="bill-search-section">
+                <div class="bill-search-left">
+                    <span class="bill-search-icon">🧾</span>
+                    <div>
+                        <h2 style="margin: 0 0 4px 0; font-size: 1.1rem;">Generate Invoice</h2>
+                        <p style="margin: 0; color: var(--gray-500); font-size: .85rem;">Enter a reservation ID to generate the bill</p>
+                    </div>
+                </div>
+                <div class="bill-search-right">
+                    <div class="bill-search-input-wrap">
+                        <span class="bill-search-input-prefix">#</span>
+                        <input type="number" id="reservationIdInput" placeholder="Reservation ID" class="bill-search-input">
+                    </div>
+                    <button class="btn btn-gold" onclick="generateBill()" style="white-space: nowrap;">Generate Bill</button>
+                </div>
             </div>
-            
-            <div id="searchError" class="error-message" style="display: none; margin-top: 16px;"></div>
+            <div id="searchError" class="enhanced-alert enhanced-alert--error" style="display: none; margin: 16px 24px 24px;">
+                <span class="enhanced-alert-icon">⚠️</span>
+                <div class="enhanced-alert-body"><p id="searchErrorText"></p></div>
+            </div>
         </div>
 
         <!-- Bill / Invoice -->
-        <div class="card card-elevated" id="billSection" style="display: none; padding: 48px;">
-            <div class="bill-header">
-                <div style="font-size: 2.2rem; margin-bottom: 8px;">🌊</div>
-                <h1>OceanView Resort</h1>
-                <p style="margin: 4px 0; color: var(--gray-500); font-size: 0.9rem;">Beachfront Boulevard, Galle, Sri Lanka</p>
-                <p style="margin: 4px 0; color: var(--gray-500); font-size: 0.9rem;">Phone: (555) 123-4567 &bull; Email: billing@oceanview.com</p>
-                <h2 style="margin-top: 20px; color: var(--ocean-mid); font-size: 1.2rem; letter-spacing: 3px; text-transform: uppercase;">Invoice</h2>
-            </div>
-
-            <div class="bill-info">
-                <div class="info-section">
-                    <h3>Guest Information</h3>
-                    <div id="guestInfo"></div>
+        <div class="card card-elevated" id="billSection" style="display: none; padding: 0; overflow: hidden;">
+            <!-- Invoice Header -->
+            <div class="invoice-header">
+                <div class="invoice-brand">
+                    <span style="font-size: 2.4rem;">🌊</span>
+                    <div>
+                        <h1 style="margin:0; font-size: 1.5rem;">OceanView Resort</h1>
+                        <p style="margin: 2px 0 0; font-size: .82rem; opacity: .8;">Beachfront Boulevard, Galle, Sri Lanka</p>
+                        <p style="margin: 2px 0 0; font-size: .82rem; opacity: .8;">Phone: (555) 123-4567 &bull; billing@oceanview.com</p>
+                    </div>
                 </div>
-                <div class="info-section">
-                    <h3>Reservation Details</h3>
-                    <div id="reservationInfo"></div>
+                <div class="invoice-tag">
+                    <span class="invoice-tag-label">INVOICE</span>
+                    <span class="invoice-tag-id" id="invoiceId"></span>
                 </div>
             </div>
 
-            <div class="table-wrapper">
-                <table class="charges-table">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Details</th>
-                            <th style="text-align: right;">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody id="chargesBody"></tbody>
-                </table>
-            </div>
+            <div style="padding: 32px 40px;">
+                <div class="bill-info">
+                    <div class="info-section">
+                        <h3>👤 Guest Information</h3>
+                        <div id="guestInfo"></div>
+                    </div>
+                    <div class="info-section">
+                        <h3>🗓️ Reservation Details</h3>
+                        <div id="reservationInfo"></div>
+                    </div>
+                </div>
 
-            <div class="total-section">
-                <div class="total-row">
-                    <span>Subtotal</span>
-                    <span id="subtotalAmount">LKR 0.00</span>
+                <div class="table-wrapper" style="margin-top: 28px;">
+                    <table class="charges-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Details</th>
+                                <th style="text-align: right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="chargesBody"></tbody>
+                    </table>
                 </div>
-                <div class="total-row">
-                    <span>Service Charge (5%)</span>
-                    <span id="serviceChargeAmount">LKR 0.00</span>
-                </div>
-                <div class="total-row">
-                    <span>Tax (8%)</span>
-                    <span id="taxAmount">LKR 0.00</span>
-                </div>
-                <div class="total-row grand-total">
-                    <span>Grand Total</span>
-                    <span id="grandTotalAmount">LKR 0.00</span>
-                </div>
-            </div>
 
-            <div style="margin-top: 40px; padding: 20px; background: var(--sand-pale); border-radius: var(--radius-sm); text-align: center; border: 1px dashed var(--sand-dark);">
-                <p style="margin: 0; color: var(--gray-700);">Thank you for choosing OceanView Resort!</p>
-                <p style="margin: 6px 0 0 0; color: var(--gray-500); font-size: 0.85rem;">Generated on: <span id="billDate"></span></p>
-            </div>
+                <div class="total-section">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span id="subtotalAmount">LKR 0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Service Charge (5%)</span>
+                        <span id="serviceChargeAmount">LKR 0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax (8%)</span>
+                        <span id="taxAmount">LKR 0.00</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Grand Total</span>
+                        <span id="grandTotalAmount">LKR 0.00</span>
+                    </div>
+                </div>
 
-            <button class="btn btn-primary no-print" onclick="window.print()" style="margin-top: 24px;">Print Bill</button>
-            <button class="btn btn-gold no-print" id="confirmBillBtn" onclick="confirmBill()" style="margin-top: 24px; margin-left: 12px; display: none;">Confirm Bill</button>
-            <div id="confirmedBadge" style="display: none; margin-top: 24px; padding: 16px 24px; background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(39, 174, 96, 0.05)); color: #155724; border: 2px solid rgba(39, 174, 96, 0.3); border-radius: var(--radius-md); text-align: center; font-weight: 600; font-size: 1.05rem; animation: fadeInUp 0.4s ease-out;">
-                <span style="font-size: 1.4rem; display: block; margin-bottom: 4px;">✅</span> Bill Confirmed
+                <div class="invoice-thankyou">
+                    <span style="font-size: 1.5rem;">🌅</span>
+                    <p style="margin: 8px 0 0; font-weight: 600; color: var(--ocean-deep);">Thank you for choosing OceanView Resort!</p>
+                    <p style="margin: 4px 0 0; color: var(--gray-500); font-size: 0.82rem;">Generated on: <span id="billDate"></span></p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="invoice-actions no-print">
+                    <button class="btn btn-primary" onclick="window.print()">🖨️ Print Invoice</button>
+                    <button class="btn btn-gold" id="confirmBillBtn" onclick="confirmBill()" style="display: none;">✅ Confirm Bill</button>
+                </div>
+                <div id="confirmedBadge" class="invoice-confirmed-badge" style="display: none;">
+                    <span style="font-size: 1.3rem;">✅</span> Bill Confirmed — Reservation Status: CONFIRMED
+                </div>
             </div>
         </div>
 
@@ -139,14 +170,17 @@
             billSection.style.display = 'none';
             
             if (!reservationId) {
-                searchError.textContent = 'Please enter a reservation ID';
-                searchError.style.display = 'block';
+                document.getElementById('searchErrorText').textContent = 'Please enter a reservation ID';
+                searchError.style.display = 'flex';
                 return;
             }
             
             try {
                 const reservation = await API.get('/reservations/' + reservationId);
                 const billing = await API.get('/billing/' + reservationId);
+
+                // Invoice ID
+                document.getElementById('invoiceId').textContent = '#INV-' + String(reservation.id).padStart(5, '0');
                 
                 document.getElementById('guestInfo').innerHTML = `
                     <div class="info-row"><span class="info-label">Name</span><span class="info-value">${reservation.guestFullName}</span></div>
@@ -160,8 +194,8 @@
                 const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
                 
                 document.getElementById('reservationInfo').innerHTML = `
-                    <div class="info-row"><span class="info-label">Reservation ID</span><span class="info-value">#${reservation.id}</span></div>
-                    <div class="info-row"><span class="info-label">Room Type</span><span class="info-value">${reservation.roomType}</span></div>
+                    <div class="info-row"><span class="info-label">Reservation ID</span><span class="info-value"><strong>#${reservation.id}</strong></span></div>
+                    <div class="info-row"><span class="info-label">Room Type</span><span class="info-value"><span class="dash-room-tag">${reservation.roomType}</span></span></div>
                     <div class="info-row"><span class="info-label">Check-In</span><span class="info-value">${reservation.checkIn}</span></div>
                     <div class="info-row"><span class="info-label">Check-Out</span><span class="info-value">${reservation.checkOut}</span></div>
                     <div class="info-row"><span class="info-label">Nights</span><span class="info-value">${nights}</span></div>
@@ -175,7 +209,7 @@
                 document.getElementById('chargesBody').innerHTML = `
                     <tr>
                         <td>Room Charges</td>
-                        <td>${reservation.roomType} &mdash; ${nights} night(s) x LKR ${ratePerNight.toLocaleString()}</td>
+                        <td>${reservation.roomType} &mdash; ${nights} night(s) × LKR ${ratePerNight.toLocaleString()}</td>
                         <td style="text-align: right;">LKR ${roomSubtotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     </tr>
                 `;
@@ -190,25 +224,24 @@
                 document.getElementById('grandTotalAmount').textContent = 'LKR ' + grandTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 document.getElementById('billDate').textContent = new Date().toLocaleString();
                 
-                // Show or hide confirm button based on reservation status
                 const confirmBtn = document.getElementById('confirmBillBtn');
                 const confirmedBadge = document.getElementById('confirmedBadge');
                 if (reservation.status === 'CONFIRMED') {
                     confirmBtn.style.display = 'none';
-                    confirmedBadge.style.display = 'block';
+                    confirmedBadge.style.display = 'flex';
                 } else {
                     confirmBtn.style.display = 'inline-block';
                     confirmedBadge.style.display = 'none';
                 }
                 
-                // Store reservation ID for confirm action
                 window.currentReservationId = reservation.id;
                 
                 billSection.style.display = 'block';
+                billSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (error) {
                 console.error('Error generating bill:', error);
-                searchError.textContent = 'Error: ' + (error.message || 'Could not generate bill. Please check the reservation ID.');
-                searchError.style.display = 'block';
+                document.getElementById('searchErrorText').textContent = error.message || 'Could not generate bill. Please check the reservation ID.';
+                searchError.style.display = 'flex';
             }
         }
 
@@ -218,17 +251,12 @@
 
         async function confirmBill() {
             if (!window.currentReservationId) return;
-            
             if (!confirm('Are you sure you want to confirm this bill?')) return;
             
             try {
                 await API.patch('/reservations/' + window.currentReservationId + '/status', { status: 'CONFIRMED' });
-                
-                // Hide confirm button and show confirmed badge
                 document.getElementById('confirmBillBtn').style.display = 'none';
-                document.getElementById('confirmedBadge').style.display = 'block';
-                
-                alert('Bill confirmed successfully! The reservation status has been updated.');
+                document.getElementById('confirmedBadge').style.display = 'flex';
             } catch (error) {
                 console.error('Error confirming bill:', error);
                 alert('Error confirming bill: ' + (error.message || 'Something went wrong'));
