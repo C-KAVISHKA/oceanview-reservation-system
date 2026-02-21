@@ -104,6 +104,38 @@ public class ReservationController {
         }
     }
 
+    // PATCH /api/reservations/{id}/status - update only the reservation status
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> updateReservationStatus(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, String> body) {
+
+        String newStatus = body.get("status");
+        log.info("Updating status of reservation {} to {}", id, newStatus);
+
+        if (newStatus == null || newStatus.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("Status is required"));
+        }
+
+        try {
+            Reservation existing = reservationService.getById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Reservation not found with ID: " + id));
+            existing.setStatus(newStatus.toUpperCase());
+            Reservation saved = reservationService.save(existing);
+            log.info("Reservation {} status updated to {}", id, newStatus);
+            return ResponseEntity.ok(saved);
+        } catch (IllegalArgumentException e) {
+            log.error("Error updating status for reservation {}: {}", id, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Error updating reservation status {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Failed to update status: " + e.getMessage()));
+        }
+    }
+
     // DELETE /api/reservations/{id} - delete a reservation
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservation(@PathVariable Long id) {

@@ -17,11 +17,11 @@ import java.util.Map;
 @Slf4j
 public class BillingService {
 
-    // Room rates per night
-    private static final BigDecimal RATE_SINGLE = new BigDecimal("100.00");
-    private static final BigDecimal RATE_DOUBLE = new BigDecimal("150.00");
-    private static final BigDecimal RATE_SUITE = new BigDecimal("250.00");
-    private static final BigDecimal RATE_DELUXE = new BigDecimal("400.00");
+    // Room rates per night (LKR)
+    private static final BigDecimal RATE_SINGLE = new BigDecimal("30000.00");
+    private static final BigDecimal RATE_DOUBLE = new BigDecimal("45000.00");
+    private static final BigDecimal RATE_SUITE = new BigDecimal("75000.00");
+    private static final BigDecimal RATE_DELUXE = new BigDecimal("120000.00");
 
     private static final BigDecimal TAX_RATE = new BigDecimal("0.08");
     private static final BigDecimal SERVICE_CHARGE_RATE = new BigDecimal("0.05");
@@ -83,7 +83,7 @@ public class BillingService {
         billDetails.setTaxRate(TAX_RATE.multiply(new BigDecimal("100")).intValue());
         billDetails.setGrandTotal(grandTotal);
 
-        log.info("Bill total for reservation {}: ${}", reservation.getId(), grandTotal);
+        log.info("Bill total for reservation {}: LKR {}", reservation.getId(), grandTotal);
 
         return billDetails;
     }

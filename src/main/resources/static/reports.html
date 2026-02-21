@@ -18,132 +18,202 @@
             </div>
         </a>
         <div class="topbar-nav">
-            <a href="dashboard.html">Dashboard</a>
-            <a href="new-reservation.html">New Booking</a>
-            <a href="view-reservation.html">Reservations</a>
-            <a href="billing.html">Billing</a>
-            <a href="reports.html" class="active">Reports</a>
-            <a href="help.html">Help</a>
+            <a href="dashboard.html">🏠 Dashboard</a>
+            <a href="new-reservation.html">➕ New Booking</a>
+            <a href="view-reservation.html">📋 Reservations</a>
+            <a href="billing.html">💳 Billing</a>
+            <a href="reports.html" class="active">📊 Reports</a>
+            <a href="help.html">❓ Help</a>
         </div>
         <div class="topbar-right">
-            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">Logout</button>
+            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">🚪 Logout</button>
         </div>
     </nav>
 
+    <!-- Page Banner -->
+    <div class="page-banner">
+        <div class="page-banner-content">
+            <div class="page-banner-icon">📊</div>
+            <div>
+                <h1 class="page-banner-title">Reports & Analytics</h1>
+                <p class="page-banner-sub">View occupancy and revenue insights for the resort</p>
+            </div>
+        </div>
+        <div class="page-banner-wave"></div>
+    </div>
+
     <div class="page-content" style="max-width: 1200px;">
-        <div class="page-header">
-            <h1>Reports & Analytics</h1>
-            <div class="wave-divider"></div>
-            <p>View occupancy and revenue reports</p>
+
+        <!-- Report Type Tabs -->
+        <div class="report-tabs">
+            <button class="report-tab active" onclick="switchReport('occupancy')">🏨 Room Occupancy</button>
+            <button class="report-tab" onclick="switchReport('revenue')">💰 Revenue</button>
         </div>
 
         <!-- Occupancy Report -->
-        <div class="card" style="margin-bottom: 24px;">
-            <h2 class="form-section-title">Room Occupancy Report</h2>
-            <p style="color: var(--gray-500); margin-bottom: 16px;">View room occupancy for a specific date</p>
-
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
-                <input type="date" id="occupancyDate" class="form-control" style="max-width: 220px;">
-                <button class="btn btn-primary" onclick="generateOccupancyReport()">Generate Report</button>
+        <div id="occupancySection" class="report-section">
+            <div class="card card-elevated" style="margin-bottom: 24px;">
+                <div class="report-control-bar">
+                    <div class="report-control-left">
+                        <span class="report-control-icon">📅</span>
+                        <div>
+                            <h2 style="margin:0; font-size: 1.05rem;">Room Occupancy Report</h2>
+                            <p style="margin: 2px 0 0; font-size: .82rem; color: var(--gray-500);">Select date to view occupancy breakdown</p>
+                        </div>
+                    </div>
+                    <div class="report-control-right">
+                        <input type="date" id="occupancyDate" class="report-date-input">
+                        <button class="btn btn-primary" onclick="generateOccupancyReport()">Generate</button>
+                    </div>
+                </div>
             </div>
 
-            <div id="occupancyError" class="error-message" style="display: none;"></div>
-            <div id="occupancyLoading" class="info-message" style="display: none;">Loading report...</div>
+            <div id="occupancyError" class="enhanced-alert enhanced-alert--error" style="display: none; margin-bottom: 20px;">
+                <span class="enhanced-alert-icon">⚠️</span>
+                <div class="enhanced-alert-body"><p id="occupancyErrorText"></p></div>
+            </div>
+            <div id="occupancyLoading" style="display: none; text-align: center; padding: 40px;"><div class="spinner"></div><p style="margin-top: 12px; color: var(--gray-500);">Generating report...</p></div>
 
             <div id="occupancyResults" style="display: none;">
-                <div class="stats-grid" style="margin-bottom: 28px;">
-                    <div class="report-stat-card">
-                        <p>Total Rooms</p>
-                        <h3 id="totalRooms">-</h3>
+                <!-- Overview Cards -->
+                <div class="dash-stats-grid" style="margin-bottom: 28px;">
+                    <div class="dash-stat-card dash-stat--ocean">
+                        <div class="dash-stat-icon-wrap"><span>🏨</span></div>
+                        <div class="dash-stat-info">
+                            <span class="dash-stat-label">Total Rooms</span>
+                            <span class="dash-stat-value" id="totalRooms">-</span>
+                        </div>
                     </div>
-                    <div class="report-stat-card">
-                        <p>Occupied Rooms</p>
-                        <h3 id="occupiedRooms">-</h3>
+                    <div class="dash-stat-card dash-stat--coral">
+                        <div class="dash-stat-icon-wrap"><span>🔑</span></div>
+                        <div class="dash-stat-info">
+                            <span class="dash-stat-label">Occupied</span>
+                            <span class="dash-stat-value" id="occupiedRooms">-</span>
+                        </div>
                     </div>
-                    <div class="report-stat-card">
-                        <p>Available Rooms</p>
-                        <h3 id="availableRooms">-</h3>
+                    <div class="dash-stat-card dash-stat--green">
+                        <div class="dash-stat-icon-wrap"><span>🟢</span></div>
+                        <div class="dash-stat-info">
+                            <span class="dash-stat-label">Available</span>
+                            <span class="dash-stat-value" id="availableRooms">-</span>
+                        </div>
                     </div>
-                    <div class="report-stat-card">
-                        <p>Occupancy Rate</p>
-                        <h3 id="occupancyRate">-</h3>
+                    <div class="dash-stat-card dash-stat--amber">
+                        <div class="dash-stat-icon-wrap"><span>📈</span></div>
+                        <div class="dash-stat-info">
+                            <span class="dash-stat-label">Occupancy Rate</span>
+                            <span class="dash-stat-value" id="occupancyRate">-</span>
+                        </div>
                     </div>
                 </div>
 
-                <h3 class="form-section-title" style="margin-top: 0;">Room Type Breakdown</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Room Type</th>
-                                <th>Total</th>
-                                <th>Occupied</th>
-                                <th>Available</th>
-                                <th>Occupancy %</th>
-                            </tr>
-                        </thead>
-                        <tbody id="roomBreakdown"></tbody>
-                    </table>
+                <!-- Visual Occupancy Bars -->
+                <div class="card card-elevated" style="margin-bottom: 24px;">
+                    <h3 style="margin: 0 0 20px; font-size: 1.05rem; color: var(--ocean-deep);">Room Type Breakdown</h3>
+                    <div id="occupancyVisual" class="occ-visual-grid"></div>
+                </div>
+
+                <!-- Detailed Table -->
+                <div class="card card-elevated">
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Room Type</th>
+                                    <th>Total</th>
+                                    <th>Occupied</th>
+                                    <th>Available</th>
+                                    <th>Occupancy %</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomBreakdown"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Revenue Report -->
-        <div class="card">
-            <h2 class="form-section-title">Revenue Report</h2>
-            <p style="color: var(--gray-500); margin-bottom: 16px;">View revenue for a date range</p>
-
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
-                <input type="date" id="revenueFrom" class="form-control" style="max-width: 220px;">
-                <input type="date" id="revenueTo" class="form-control" style="max-width: 220px;">
-                <button class="btn btn-primary" onclick="generateRevenueReport()">Generate Report</button>
+        <div id="revenueSection" class="report-section" style="display: none;">
+            <div class="card card-elevated" style="margin-bottom: 24px;">
+                <div class="report-control-bar">
+                    <div class="report-control-left">
+                        <span class="report-control-icon">💰</span>
+                        <div>
+                            <h2 style="margin:0; font-size: 1.05rem;">Revenue Report</h2>
+                            <p style="margin: 2px 0 0; font-size: .82rem; color: var(--gray-500);">Select a date range to view revenue data</p>
+                        </div>
+                    </div>
+                    <div class="report-control-right">
+                        <input type="date" id="revenueFrom" class="report-date-input">
+                        <span style="color: var(--gray-400); font-size: .85rem;">to</span>
+                        <input type="date" id="revenueTo" class="report-date-input">
+                        <button class="btn btn-primary" onclick="generateRevenueReport()">Generate</button>
+                    </div>
+                </div>
             </div>
 
-            <div id="revenueError" class="error-message" style="display: none;"></div>
-            <div id="revenueLoading" class="info-message" style="display: none;">Loading report...</div>
+            <div id="revenueError" class="enhanced-alert enhanced-alert--error" style="display: none; margin-bottom: 20px;">
+                <span class="enhanced-alert-icon">⚠️</span>
+                <div class="enhanced-alert-body"><p id="revenueErrorText"></p></div>
+            </div>
+            <div id="revenueLoading" style="display: none; text-align: center; padding: 40px;"><div class="spinner"></div><p style="margin-top: 12px; color: var(--gray-500);">Generating report...</p></div>
 
             <div id="revenueResults" style="display: none;">
-                <div class="stats-grid" style="margin-bottom: 28px;">
-                    <div class="report-stat-card">
-                        <p>Total Revenue</p>
-                        <h3 id="totalRevenue">-</h3>
+                <div class="dash-stats-grid" style="margin-bottom: 28px;">
+                    <div class="dash-stat-card dash-stat--green">
+                        <div class="dash-stat-icon-wrap"><span>💰</span></div>
+                        <div class="dash-stat-info">
+                            <span class="dash-stat-label">Total Revenue</span>
+                            <span class="dash-stat-value" id="totalRevenue" style="font-size: 1.4rem;">-</span>
+                        </div>
                     </div>
-                    <div class="report-stat-card">
-                        <p>Total Reservations</p>
-                        <h3 id="totalReservations">-</h3>
+                    <div class="dash-stat-card dash-stat--ocean">
+                        <div class="dash-stat-icon-wrap"><span>📋</span></div>
+                        <div class="dash-stat-info">
+                            <span class="dash-stat-label">Total Bookings</span>
+                            <span class="dash-stat-value" id="totalReservations">-</span>
+                        </div>
                     </div>
-                    <div class="report-stat-card">
-                        <p>Average Booking Value</p>
-                        <h3 id="averageRevenue">-</h3>
+                    <div class="dash-stat-card dash-stat--amber">
+                        <div class="dash-stat-icon-wrap"><span>📊</span></div>
+                        <div class="dash-stat-info">
+                            <span class="dash-stat-label">Avg. Booking Value</span>
+                            <span class="dash-stat-value" id="averageRevenue" style="font-size: 1.4rem;">-</span>
+                        </div>
                     </div>
                 </div>
 
-                <h3 class="form-section-title" style="margin-top: 0;">Revenue by Room Type</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Room Type</th>
-                                <th>Reservations</th>
-                                <th style="text-align: right;">Revenue</th>
-                            </tr>
-                        </thead>
-                        <tbody id="roomTypeRevenue"></tbody>
-                    </table>
+                <div class="card card-elevated" style="margin-bottom: 24px;">
+                    <h3 style="margin: 0 0 16px; font-size: 1.05rem; color: var(--ocean-deep);">Revenue by Room Type</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Room Type</th>
+                                    <th>Reservations</th>
+                                    <th style="text-align: right;">Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomTypeRevenue"></tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <h3 class="form-section-title" style="margin-top: 28px;">Daily Revenue</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Reservations</th>
-                                <th style="text-align: right;">Revenue</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dailyRevenue"></tbody>
-                    </table>
+                <div class="card card-elevated">
+                    <h3 style="margin: 0 0 16px; font-size: 1.05rem; color: var(--ocean-deep);">Daily Revenue Breakdown</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Reservations</th>
+                                    <th style="text-align: right;">Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dailyRevenue"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,6 +230,18 @@
         document.getElementById('revenueFrom').value = today;
         document.getElementById('revenueTo').value = today;
 
+        function switchReport(type) {
+            document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.report-section').forEach(s => s.style.display = 'none');
+            if (type === 'occupancy') {
+                document.querySelector('.report-tab:first-child').classList.add('active');
+                document.getElementById('occupancySection').style.display = 'block';
+            } else {
+                document.querySelector('.report-tab:last-child').classList.add('active');
+                document.getElementById('revenueSection').style.display = 'block';
+            }
+        }
+
         async function generateOccupancyReport() {
             const date = document.getElementById('occupancyDate').value;
             const errorDiv = document.getElementById('occupancyError');
@@ -170,8 +252,8 @@
             resultsDiv.style.display = 'none';
 
             if (!date) {
-                errorDiv.textContent = 'Please select a date';
-                errorDiv.style.display = 'block';
+                document.getElementById('occupancyErrorText').textContent = 'Please select a date';
+                errorDiv.style.display = 'flex';
                 return;
             }
 
@@ -195,13 +277,40 @@
 
                 const roomTypes = ['SINGLE', 'DOUBLE', 'SUITE', 'DELUXE'];
                 const roomCapacity = { SINGLE: 25, DOUBLE: 40, SUITE: 25, DELUXE: 10 };
+                const roomIcons = { SINGLE: '🛏️', DOUBLE: '🛏️🛏️', SUITE: '🏨', DELUXE: '👑' };
 
-                document.getElementById('roomBreakdown').innerHTML = roomTypes.map(type => {
+                // Visual bars
+                document.getElementById('occupancyVisual').innerHTML = roomTypes.map((type, i) => {
+                    const occupied = occupiedReservations.filter(r => r.roomType === type).length;
+                    const total = roomCapacity[type];
+                    const pct = ((occupied / total) * 100).toFixed(1);
+                    const avail = total - occupied;
+                    return `
+                        <div class="occ-visual-row" style="animation: fadeInUp 0.4s ease-out both; animation-delay: ${i * 0.08}s;">
+                            <div class="occ-visual-label">
+                                <span>${roomIcons[type]}</span>
+                                <strong>${type}</strong>
+                            </div>
+                            <div class="occ-visual-bar-wrap">
+                                <div class="occ-visual-bar">
+                                    <div class="occ-visual-bar-fill" style="width: ${pct}%; transition: width 1s cubic-bezier(0.22,1,0.36,1);"></div>
+                                </div>
+                                <span class="occ-visual-pct">${pct}%</span>
+                            </div>
+                            <div class="occ-visual-meta">${occupied} occupied &bull; ${avail} free</div>
+                        </div>`;
+                }).join('');
+
+                // Table
+                document.getElementById('roomBreakdown').innerHTML = roomTypes.map((type, i) => {
                     const occupied = occupiedReservations.filter(r => r.roomType === type).length;
                     const total = roomCapacity[type];
                     const available = total - occupied;
                     const rate = ((occupied / total) * 100).toFixed(1);
-                    return '<tr><td>' + type + '</td><td>' + total + '</td><td>' + occupied + '</td><td>' + available + '</td><td>' + rate + '%</td></tr>';
+                    return `<tr style="animation: fadeInUp 0.35s ease-out both; animation-delay: ${i * 0.06}s;">
+                        <td><span class="dash-room-tag">${type}</span></td>
+                        <td>${total}</td><td>${occupied}</td><td>${available}</td>
+                        <td><strong>${rate}%</strong></td></tr>`;
                 }).join('');
 
                 loadingDiv.style.display = 'none';
@@ -209,8 +318,8 @@
             } catch (error) {
                 console.error('Error generating occupancy report:', error);
                 loadingDiv.style.display = 'none';
-                errorDiv.textContent = 'Error: ' + (error.message || 'Could not generate report');
-                errorDiv.style.display = 'block';
+                document.getElementById('occupancyErrorText').textContent = error.message || 'Could not generate report';
+                errorDiv.style.display = 'flex';
             }
         }
 
@@ -225,13 +334,13 @@
             resultsDiv.style.display = 'none';
 
             if (!fromDate || !toDate) {
-                errorDiv.textContent = 'Please select both from and to dates';
-                errorDiv.style.display = 'block';
+                document.getElementById('revenueErrorText').textContent = 'Please select both from and to dates';
+                errorDiv.style.display = 'flex';
                 return;
             }
             if (fromDate > toDate) {
-                errorDiv.textContent = 'From date must be before to date';
-                errorDiv.style.display = 'block';
+                document.getElementById('revenueErrorText').textContent = 'From date must be before to date';
+                errorDiv.style.display = 'flex';
                 return;
             }
 
@@ -243,7 +352,7 @@
                     return r.checkIn >= fromDate && r.checkIn <= toDate && r.status !== 'CANCELLED';
                 });
 
-                const roomRates = { 'SINGLE': 100, 'DOUBLE': 150, 'SUITE': 250, 'DELUXE': 400 };
+                const roomRates = { 'SINGLE': 30000, 'DOUBLE': 45000, 'SUITE': 75000, 'DELUXE': 120000 };
 
                 const revenueData = relevantReservations.map(r => {
                     const checkIn = new Date(r.checkIn);
@@ -260,15 +369,18 @@
                 const totalReservations = revenueData.length;
                 const averageRevenue = totalReservations > 0 ? totalRevenue / totalReservations : 0;
 
-                document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+                document.getElementById('totalRevenue').textContent = 'LKR ' + totalRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 document.getElementById('totalReservations').textContent = totalReservations;
-                document.getElementById('averageRevenue').textContent = '$' + averageRevenue.toFixed(2);
+                document.getElementById('averageRevenue').textContent = 'LKR ' + averageRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
                 const roomTypes = ['SINGLE', 'DOUBLE', 'SUITE', 'DELUXE'];
-                document.getElementById('roomTypeRevenue').innerHTML = roomTypes.map(type => {
+                document.getElementById('roomTypeRevenue').innerHTML = roomTypes.map((type, i) => {
                     const typeData = revenueData.filter(r => r.roomType === type);
                     const typeRevenue = typeData.reduce((sum, r) => sum + r.revenue, 0);
-                    return '<tr><td>' + type + '</td><td>' + typeData.length + '</td><td style="text-align:right">$' + typeRevenue.toFixed(2) + '</td></tr>';
+                    return `<tr style="animation: fadeInUp 0.35s ease-out both; animation-delay: ${i * 0.06}s;">
+                        <td><span class="dash-room-tag">${type}</span></td>
+                        <td>${typeData.length}</td>
+                        <td style="text-align:right"><strong>LKR ${typeRevenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td></tr>`;
                 }).join('');
 
                 const dailyData = {};
@@ -278,19 +390,21 @@
                     dailyData[r.checkIn].revenue += r.revenue;
                 });
 
-                const dailyHtml = Object.keys(dailyData).sort().map(date => {
-                    return '<tr><td>' + date + '</td><td>' + dailyData[date].count + '</td><td style="text-align:right">$' + dailyData[date].revenue.toFixed(2) + '</td></tr>';
+                const dailyHtml = Object.keys(dailyData).sort().map((date, i) => {
+                    return `<tr style="animation: fadeInUp 0.35s ease-out both; animation-delay: ${i * 0.06}s;">
+                        <td>${date}</td><td>${dailyData[date].count}</td>
+                        <td style="text-align:right"><strong>LKR ${dailyData[date].revenue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td></tr>`;
                 }).join('');
 
-                document.getElementById('dailyRevenue').innerHTML = dailyHtml || '<tr><td colspan="3" style="text-align:center; color: var(--gray-500);">No data available</td></tr>';
+                document.getElementById('dailyRevenue').innerHTML = dailyHtml || '<tr><td colspan="3" style="text-align:center; padding:30px; color: var(--gray-500);">📭 No revenue data for this period</td></tr>';
 
                 loadingDiv.style.display = 'none';
                 resultsDiv.style.display = 'block';
             } catch (error) {
                 console.error('Error generating revenue report:', error);
                 loadingDiv.style.display = 'none';
-                errorDiv.textContent = 'Error: ' + (error.message || 'Could not generate report');
-                errorDiv.style.display = 'block';
+                document.getElementById('revenueErrorText').textContent = error.message || 'Could not generate report';
+                errorDiv.style.display = 'flex';
             }
         }
     </script>

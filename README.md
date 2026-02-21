@@ -9,7 +9,7 @@ A Spring Boot REST API backend with static HTML/CSS/vanilla-JS frontend for mana
 ## Technology Stack
 
 - **Backend**: Java 17, Spring Boot
-- **Database**: H2 (development), MySQL (optional production)
+- **Database**: MySQL
 - **Frontend**: HTML, CSS, Vanilla JavaScript (located in `src/main/resources/static/`)
 - **Build Tool**: Maven
 - **Version Control**: Git
@@ -20,12 +20,14 @@ A Spring Boot REST API backend with static HTML/CSS/vanilla-JS frontend for mana
 
 - Java JDK 17 or higher
 - Apache Maven 3.9+
+- MySQL 5.7+ or 8.0+
 - Git
 
 Verify installations:
 ```bash
 java -version
 mvn -v
+mysql --version
 git --version
 ```
 
@@ -89,19 +91,27 @@ Once the application is running, you can access:
 |-----------|-----|-------|
 | **Frontend** | http://localhost:8080/ | Main landing page (index.html) |
 | **API Base** | http://localhost:8080/api | REST API endpoints |
-| **H2 Console** | http://localhost:8080/h2-console | Database management interface |
 | **API Docs** | See [docs/api.md](docs/api.md) | Complete API specification |
 
-#### H2 Console Access
+#### Database Configuration
 
-The H2 database console is available at `/h2-console` for development.
+The application uses MySQL database.
 
-**Connection Details:**
-- **JDBC URL**: `jdbc:h2:mem:oceanview`
-- **Username**: `sa`
-- **Password**: (leave blank)
+**Default Connection Details:**
+- **Database**: `oceanview`
+- **Host**: `localhost:3306`
+- **Username**: `root`
+- **Password**: `root`
 
-This allows you to inspect the database schema, run SQL queries, and view data during development.
+You can modify these settings in `src/main/resources/application.properties`:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/oceanview?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+spring.datasource.username=root
+spring.datasource.password=root
+```
+
+The database will be created automatically on first run if it doesn't exist.
 
 #### Server Port Configuration
 
@@ -152,7 +162,6 @@ mvn spring-boot:run
 
 # 4. Access the application
 # Open your browser to: http://localhost:8080
-# Access H2 Console: http://localhost:8080/h2-console
 ```
 
 ### Development Workflow
@@ -161,7 +170,7 @@ mvn spring-boot:run
 2. **Run tests** to verify: `mvn test`
 3. **Build and run**: `mvn clean spring-boot:run`
 4. **Test endpoints** using Postman or curl
-5. **Check H2 console** to inspect database state
+5. **Check MySQL database** to inspect database state
 6. **Commit changes**: `git add . && git commit -m "message"`
 
 ## Project Structure
@@ -265,9 +274,14 @@ mvn clean install
 mvn clean install -U
 ```
 
-### H2 Console Not Accessible
+### MySQL Connection Issues
 
-Ensure `spring.h2.console.enabled=true` is set in `application.properties`
+If you see "Public Key Retrieval is not allowed" error:
+- Add `allowPublicKeyRetrieval=true` to the JDBC URL in `application.properties`
+
+If MySQL is not running:
+- **Windows**: Check MySQL service in Services
+- **Linux/macOS**: `sudo systemctl start mysql` or `brew services start mysql`
 
 ### Tests Failing
 

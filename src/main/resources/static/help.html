@@ -18,163 +18,316 @@
             </div>
         </a>
         <div class="topbar-nav">
-            <a href="dashboard.html">Dashboard</a>
-            <a href="new-reservation.html">New Booking</a>
-            <a href="view-reservation.html">Reservations</a>
-            <a href="billing.html">Billing</a>
-            <a href="reports.html">Reports</a>
-            <a href="help.html" class="active">Help</a>
+            <a href="dashboard.html">🏠 Dashboard</a>
+            <a href="new-reservation.html">➕ New Booking</a>
+            <a href="view-reservation.html">📋 Reservations</a>
+            <a href="billing.html">💳 Billing</a>
+            <a href="reports.html">📊 Reports</a>
+            <a href="help.html" class="active">❓ Help</a>
         </div>
         <div class="topbar-right">
-            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">Logout</button>
+            <button class="btn btn-outline btn-sm" onclick="sessionStorage.clear(); window.location.href='login.html'">🚪 Logout</button>
         </div>
     </nav>
 
-    <div class="page-content" style="max-width: 900px;">
-        <div class="page-header">
-            <h1>Help & Documentation</h1>
-            <div class="wave-divider"></div>
-            <p>User guide for the OceanView Reservation System</p>
-        </div>
-
-        <div class="help-section">
-            <h2>Getting Started</h2>
-            <p>Welcome to the OceanView Reservation System! This guide will help you navigate and use all the features.</p>
-            <h3>Login</h3>
-            <p>Use your staff credentials to log in. Demo credentials:</p>
-            <ul>
-                <li>Email: <strong>staff@oceanview.com</strong></li>
-                <li>Password: <strong>Passw0rd!</strong></li>
-            </ul>
-        </div>
-
-        <div class="help-section">
-            <h2>Creating a New Reservation</h2>
-            <p>To create a new reservation:</p>
-            <ol>
-                <li>Click <strong>"New Booking"</strong> from the navigation bar</li>
-                <li>Fill in the guest information:
-                    <ul>
-                        <li>Full Name (required, 2-100 characters)</li>
-                        <li>Email Address (required, valid email format)</li>
-                        <li>Contact Number (required, format: +1-555-0101)</li>
-                        <li>Address (required)</li>
-                    </ul>
-                </li>
-                <li>Fill in reservation details:
-                    <ul>
-                        <li>Check-In Date (must be today or future date)</li>
-                        <li>Check-Out Date (must be after check-in)</li>
-                        <li>Room Type (Single $100, Double $150, Suite $250, Deluxe $400)</li>
-                        <li>Number of Guests (1-10)</li>
-                        <li>Special Requests (optional, max 500 characters)</li>
-                    </ul>
-                </li>
-                <li>Click <strong>"Create Reservation"</strong></li>
-                <li>The system will display the reservation ID upon success</li>
-            </ol>
-        </div>
-
-        <div class="help-section">
-            <h2>Viewing & Managing Reservations</h2>
-            <p>To view all reservations:</p>
-            <ol>
-                <li>Click <strong>"Reservations"</strong> from the navigation bar</li>
-                <li>Use the search bar to filter by guest name, email, or reservation ID</li>
-                <li>Click <strong>"View"</strong> to see full reservation details</li>
-                <li>Click <strong>"Delete"</strong> to cancel a reservation (requires confirmation)</li>
-            </ol>
-            <h3>Reservation Status</h3>
-            <ul>
-                <li><strong>PENDING</strong> &mdash; Reservation created, awaiting confirmation</li>
-                <li><strong>CONFIRMED</strong> &mdash; Reservation confirmed</li>
-                <li><strong>CANCELLED</strong> &mdash; Reservation cancelled</li>
-            </ul>
-        </div>
-
-        <div class="help-section">
-            <h2>Generating Bills</h2>
-            <p>To generate a bill for a reservation:</p>
-            <ol>
-                <li>Click <strong>"Billing"</strong> from the navigation bar</li>
-                <li>Enter the Reservation ID</li>
-                <li>Click <strong>"Generate Bill"</strong></li>
-                <li>The system will display guest info, reservation details, room charges, service charge (5%), tax (8%), and grand total</li>
-                <li>Click <strong>"Print Bill"</strong> to print or save as PDF</li>
-            </ol>
-            <p><strong>Tip:</strong> You can also click "View Bill" from the reservation details modal on the Reservations page.</p>
-        </div>
-
-        <div class="help-section">
-            <h2>Reports & Analytics</h2>
-            <h3>Occupancy Report</h3>
-            <p>View room occupancy for a specific date:</p>
-            <ol>
-                <li>Click <strong>"Reports"</strong> from the navigation bar</li>
-                <li>Select a date and click <strong>"Generate Report"</strong></li>
-                <li>View total rooms, occupied, available, occupancy rate, and breakdown by room type</li>
-            </ol>
-            <h3>Revenue Report</h3>
-            <p>View revenue for a date range:</p>
-            <ol>
-                <li>Select <strong>From Date</strong> and <strong>To Date</strong></li>
-                <li>Click <strong>"Generate Report"</strong></li>
-                <li>View total revenue, total reservations, average booking value, revenue by room type, and daily breakdown</li>
-            </ol>
-        </div>
-
-        <div class="help-section">
-            <h2>Room Types & Rates</h2>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Room Type</th>
-                            <th>Rate per Night</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Single</td>
-                            <td>$100</td>
-                            <td>Cozy single occupancy room with ocean view</td>
-                        </tr>
-                        <tr>
-                            <td>Double</td>
-                            <td>$150</td>
-                            <td>Spacious double occupancy room</td>
-                        </tr>
-                        <tr>
-                            <td>Suite</td>
-                            <td>$250</td>
-                            <td>Luxury suite with separate living area</td>
-                        </tr>
-                        <tr>
-                            <td>Deluxe</td>
-                            <td>$400</td>
-                            <td>Premium beachfront deluxe suite</td>
-                        </tr>
-                    </tbody>
-                </table>
+    <!-- Page Banner -->
+    <div class="page-banner">
+        <div class="page-banner-content">
+            <div class="page-banner-icon">📖</div>
+            <div>
+                <h1 class="page-banner-title">Help & Documentation</h1>
+                <p class="page-banner-sub">Staff guide for the OceanView Reservation System</p>
             </div>
-            <h3>Billing Calculations</h3>
-            <ul>
-                <li><strong>Room Charges:</strong> Rate per night &times; Number of nights</li>
-                <li><strong>Service Charge:</strong> 5% of room charges</li>
-                <li><strong>Tax:</strong> 8% of room charges</li>
-                <li><strong>Grand Total:</strong> Room charges + Service charge + Tax</li>
-            </ul>
+        </div>
+        <div class="page-banner-wave"></div>
+    </div>
+
+    <div class="page-content" style="max-width: 960px;">
+
+        <!-- Quick Navigation -->
+        <div class="help-toc card card-elevated">
+            <h3 class="help-toc-title">📑 Quick Navigation</h3>
+            <div class="help-toc-grid">
+                <a class="help-toc-item" href="#section-start">🚀 Getting Started</a>
+                <a class="help-toc-item" href="#section-booking">➕ New Booking</a>
+                <a class="help-toc-item" href="#section-manage">📋 Manage Reservations</a>
+                <a class="help-toc-item" href="#section-billing">💳 Billing</a>
+                <a class="help-toc-item" href="#section-reports">📊 Reports</a>
+                <a class="help-toc-item" href="#section-rates">🏨 Room Rates</a>
+                <a class="help-toc-item" href="#section-support">☎️ Support</a>
+            </div>
         </div>
 
-        <div class="help-section">
-            <h2>Technical Support</h2>
-            <p>If you encounter any issues or need assistance:</p>
-            <ul>
-                <li>Email: <strong>support@oceanview.com</strong></li>
-                <li>Phone: <strong>(555) 123-4567</strong></li>
-                <li>Hours: Monday&ndash;Friday, 9:00 AM &ndash; 5:00 PM</li>
-            </ul>
+        <!-- Getting Started -->
+        <div id="section-start" class="help-card card card-elevated">
+            <div class="help-card-header">
+                <span class="help-card-icon">🚀</span>
+                <div>
+                    <h2 class="help-card-title">Getting Started</h2>
+                    <p class="help-card-sub">Introduction and login information</p>
+                </div>
+            </div>
+            <div class="help-card-body">
+                <p>Welcome to the OceanView Reservation System! This guide covers all system features to help you manage guest bookings efficiently.</p>
+                <div class="help-callout help-callout--info">
+                    <span class="help-callout-icon">🔑</span>
+                    <div>
+                        <strong>Demo Login Credentials</strong>
+                        <p>Email: <code>staff@oceanview.com</code><br>Password: <code>Passw0rd!</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Booking -->
+        <div id="section-booking" class="help-card card card-elevated">
+            <div class="help-card-header">
+                <span class="help-card-icon">➕</span>
+                <div>
+                    <h2 class="help-card-title">Creating a New Reservation</h2>
+                    <p class="help-card-sub">Step-by-step booking process</p>
+                </div>
+            </div>
+            <div class="help-card-body">
+                <div class="help-steps">
+                    <div class="help-step">
+                        <span class="help-step-num">1</span>
+                        <div>Click <strong>"New Booking"</strong> from the navigation bar</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">2</span>
+                        <div>
+                            <strong>Guest Information</strong>
+                            <ul>
+                                <li>Full Name <span class="help-req">(required, 2-100 chars)</span></li>
+                                <li>Email Address <span class="help-req">(required, valid format)</span></li>
+                                <li>Contact Number <span class="help-req">(required, e.g. +94-77-123-4567)</span></li>
+                                <li>Address <span class="help-req">(required)</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">3</span>
+                        <div>
+                            <strong>Reservation Details</strong>
+                            <ul>
+                                <li>Check-In Date <span class="help-req">(today or future)</span></li>
+                                <li>Check-Out Date <span class="help-req">(after check-in)</span></li>
+                                <li>Room Type &mdash; select from visual room cards</li>
+                                <li>Number of Guests <span class="help-req">(1-10)</span></li>
+                                <li>Special Requests <span style="color:var(--gray-500)">(optional, max 500 chars)</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">4</span>
+                        <div>Click <strong>"Create Reservation"</strong> &mdash; you'll see an estimated cost preview before submitting</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">5</span>
+                        <div>The system displays the <strong>Reservation ID</strong> upon success</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Managing Reservations -->
+        <div id="section-manage" class="help-card card card-elevated">
+            <div class="help-card-header">
+                <span class="help-card-icon">📋</span>
+                <div>
+                    <h2 class="help-card-title">Viewing & Managing Reservations</h2>
+                    <p class="help-card-sub">Search, filter, and manage all bookings</p>
+                </div>
+            </div>
+            <div class="help-card-body">
+                <div class="help-steps">
+                    <div class="help-step">
+                        <span class="help-step-num">1</span>
+                        <div>Click <strong>"Reservations"</strong> from the navigation bar</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">2</span>
+                        <div>Use the <strong>search bar</strong> to filter by guest name, email, or reservation ID</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">3</span>
+                        <div>Use <strong>filter tabs</strong> (All / Pending / Confirmed / Cancelled) to narrow results</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">4</span>
+                        <div>Click <strong>"View"</strong> for full details or <strong>"Delete"</strong> to cancel (requires confirmation)</div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 20px 0 12px; color: var(--ocean-deep);">Status Reference</h4>
+                <div class="help-status-grid">
+                    <div class="help-status-item">
+                        <span class="badge badge-warning">PENDING</span>
+                        <span>Reservation created, awaiting confirmation</span>
+                    </div>
+                    <div class="help-status-item">
+                        <span class="badge badge-success">CONFIRMED</span>
+                        <span>Reservation confirmed and active</span>
+                    </div>
+                    <div class="help-status-item">
+                        <span class="badge badge-danger">CANCELLED</span>
+                        <span>Reservation cancelled</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Billing -->
+        <div id="section-billing" class="help-card card card-elevated">
+            <div class="help-card-header">
+                <span class="help-card-icon">💳</span>
+                <div>
+                    <h2 class="help-card-title">Generating Bills</h2>
+                    <p class="help-card-sub">Invoice generation and printing</p>
+                </div>
+            </div>
+            <div class="help-card-body">
+                <div class="help-steps">
+                    <div class="help-step">
+                        <span class="help-step-num">1</span>
+                        <div>Click <strong>"Billing"</strong> from the navigation bar</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">2</span>
+                        <div>Enter the <strong>Reservation ID</strong> (e.g. 1, 2, 3...)</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">3</span>
+                        <div>Click <strong>"Generate Bill"</strong> to create the invoice</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">4</span>
+                        <div>Review the invoice with guest info, charges breakdown, service charge (5%), tax (8%), and grand total</div>
+                    </div>
+                    <div class="help-step">
+                        <span class="help-step-num">5</span>
+                        <div>Click <strong>"Print Invoice"</strong> to print or save as PDF</div>
+                    </div>
+                </div>
+                <div class="help-callout help-callout--tip">
+                    <span class="help-callout-icon">💡</span>
+                    <div><strong>Tip:</strong> You can also click "View Bill" from the reservation details modal on the Reservations page for quick access.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div id="section-reports" class="help-card card card-elevated">
+            <div class="help-card-header">
+                <span class="help-card-icon">📊</span>
+                <div>
+                    <h2 class="help-card-title">Reports & Analytics</h2>
+                    <p class="help-card-sub">Occupancy and revenue insights</p>
+                </div>
+            </div>
+            <div class="help-card-body">
+                <h4 style="margin: 0 0 10px; color: var(--ocean-deep);">🏨 Occupancy Report</h4>
+                <p>Select a date and click "Generate" to view total rooms, occupied, available, occupancy rate, and visual breakdown by room type.</p>
+
+                <h4 style="margin: 16px 0 10px; color: var(--ocean-deep);">💰 Revenue Report</h4>
+                <p>Select a date range (From/To) and click "Generate" to view total revenue, booking count, average booking value, revenue by room type, and daily breakdown.</p>
+            </div>
+        </div>
+
+        <!-- Room Rates -->
+        <div id="section-rates" class="help-card card card-elevated">
+            <div class="help-card-header">
+                <span class="help-card-icon">🏨</span>
+                <div>
+                    <h2 class="help-card-title">Room Types & Rates</h2>
+                    <p class="help-card-sub">Current rate card and billing formula</p>
+                </div>
+            </div>
+            <div class="help-card-body">
+                <div class="help-rate-cards">
+                    <div class="help-rate-card help-rate--single">
+                        <span class="help-rate-icon">🛏️</span>
+                        <strong>Single</strong>
+                        <span class="help-rate-price">LKR 30,000</span>
+                        <span class="help-rate-desc">Cozy single occupancy with ocean view</span>
+                    </div>
+                    <div class="help-rate-card help-rate--double">
+                        <span class="help-rate-icon">🛏️🛏️</span>
+                        <strong>Double</strong>
+                        <span class="help-rate-price">LKR 45,000</span>
+                        <span class="help-rate-desc">Spacious double occupancy room</span>
+                    </div>
+                    <div class="help-rate-card help-rate--suite">
+                        <span class="help-rate-icon">🏨</span>
+                        <strong>Suite</strong>
+                        <span class="help-rate-price">LKR 75,000</span>
+                        <span class="help-rate-desc">Luxury suite with living area</span>
+                    </div>
+                    <div class="help-rate-card help-rate--deluxe">
+                        <span class="help-rate-icon">👑</span>
+                        <strong>Deluxe</strong>
+                        <span class="help-rate-price">LKR 120,000</span>
+                        <span class="help-rate-desc">Premium beachfront deluxe suite</span>
+                    </div>
+                </div>
+
+                <h4 style="margin: 24px 0 12px; color: var(--ocean-deep);">Billing Calculation Formula</h4>
+                <div class="help-formula">
+                    <div class="help-formula-row">
+                        <span>Room Charges</span>
+                        <span>Rate &times; Nights</span>
+                    </div>
+                    <div class="help-formula-row">
+                        <span>Service Charge</span>
+                        <span>5% of room charges</span>
+                    </div>
+                    <div class="help-formula-row">
+                        <span>Tax</span>
+                        <span>8% of room charges</span>
+                    </div>
+                    <div class="help-formula-row help-formula-total">
+                        <span>Grand Total</span>
+                        <span>Room + Service + Tax</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Support -->
+        <div id="section-support" class="help-card card card-elevated">
+            <div class="help-card-header">
+                <span class="help-card-icon">☎️</span>
+                <div>
+                    <h2 class="help-card-title">Technical Support</h2>
+                    <p class="help-card-sub">Need help? Contact our team</p>
+                </div>
+            </div>
+            <div class="help-card-body">
+                <div class="help-contact-grid">
+                    <div class="help-contact-item">
+                        <span class="help-contact-icon">📧</span>
+                        <div>
+                            <strong>Email</strong>
+                            <p>support@oceanview.com</p>
+                        </div>
+                    </div>
+                    <div class="help-contact-item">
+                        <span class="help-contact-icon">📞</span>
+                        <div>
+                            <strong>Phone</strong>
+                            <p>+94-91-223-4567</p>
+                        </div>
+                    </div>
+                    <div class="help-contact-item">
+                        <span class="help-contact-icon">🕘</span>
+                        <div>
+                            <strong>Hours</strong>
+                            <p>Monday&ndash;Friday, 9:00 AM &ndash; 5:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="page-footer">

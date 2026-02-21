@@ -22,7 +22,7 @@ public class BillingServiceTest {
     }
 
     // UT-001: Test standard reservation billing calculation
-    // Expected: DOUBLE room, 3 nights = $508.50 total
+    // Expected: DOUBLE room, 3 nights = LKR 152,550.00 total
     @Test
     @DisplayName("UT-001: Calculate bill for standard reservation")
     void testCalculateBillForStandardReservation() {
@@ -43,15 +43,15 @@ public class BillingServiceTest {
         assertEquals("John Smith", billDetails.getGuestName());
         assertEquals("DOUBLE", billDetails.getRoomType());
         assertEquals(3, billDetails.getNumberOfNights());
-        assertEquals(new BigDecimal("150.00"), billDetails.getRoomRatePerNight());
-        assertEquals(new BigDecimal("450.00"), billDetails.getRoomSubtotal());
-        assertEquals(new BigDecimal("22.50"), billDetails.getServiceCharge());
-        assertEquals(new BigDecimal("36.00"), billDetails.getTax());
-        assertEquals(new BigDecimal("508.50"), billDetails.getGrandTotal());
+        assertEquals(new BigDecimal("45000.00"), billDetails.getRoomRatePerNight());
+        assertEquals(new BigDecimal("135000.00"), billDetails.getRoomSubtotal());
+        assertEquals(new BigDecimal("6750.00"), billDetails.getServiceCharge());
+        assertEquals(new BigDecimal("10800.00"), billDetails.getTax());
+        assertEquals(new BigDecimal("152550.00"), billDetails.getGrandTotal());
     }
 
     // UT-002: Test single night billing calculation
-    // Expected: SINGLE room, 1 night = $113.00 total
+    // Expected: SINGLE room, 1 night = LKR 33,900.00 total
     @Test
     @DisplayName("UT-002: Calculate bill for single night reservation")
     void testCalculateBillForSingleNight() {
@@ -69,15 +69,15 @@ public class BillingServiceTest {
         
         // Assert: Verify calculations
         assertEquals(1, billDetails.getNumberOfNights());
-        assertEquals(new BigDecimal("100.00"), billDetails.getRoomRatePerNight());
-        assertEquals(new BigDecimal("100.00"), billDetails.getRoomSubtotal());
-        assertEquals(new BigDecimal("5.00"), billDetails.getServiceCharge());
-        assertEquals(new BigDecimal("8.00"), billDetails.getTax());
-        assertEquals(new BigDecimal("113.00"), billDetails.getGrandTotal());
+        assertEquals(new BigDecimal("30000.00"), billDetails.getRoomRatePerNight());
+        assertEquals(new BigDecimal("30000.00"), billDetails.getRoomSubtotal());
+        assertEquals(new BigDecimal("1500.00"), billDetails.getServiceCharge());
+        assertEquals(new BigDecimal("2400.00"), billDetails.getTax());
+        assertEquals(new BigDecimal("33900.00"), billDetails.getGrandTotal());
     }
 
     // UT-003: Test extended stay billing calculation
-    // Expected: DELUXE room, 10 nights = $4,520.00 total
+    // Expected: DELUXE room, 10 nights = LKR 1,356,000.00 total
     @Test
     @DisplayName("UT-003: Calculate bill for extended stay")
     void testCalculateBillForExtendedStay() {
@@ -95,11 +95,11 @@ public class BillingServiceTest {
         
         // Assert: Verify calculations
         assertEquals(10, billDetails.getNumberOfNights());
-        assertEquals(new BigDecimal("400.00"), billDetails.getRoomRatePerNight());
-        assertEquals(new BigDecimal("4000.00"), billDetails.getRoomSubtotal());
-        assertEquals(new BigDecimal("200.00"), billDetails.getServiceCharge());
-        assertEquals(new BigDecimal("320.00"), billDetails.getTax());
-        assertEquals(new BigDecimal("4520.00"), billDetails.getGrandTotal());
+        assertEquals(new BigDecimal("120000.00"), billDetails.getRoomRatePerNight());
+        assertEquals(new BigDecimal("1200000.00"), billDetails.getRoomSubtotal());
+        assertEquals(new BigDecimal("60000.00"), billDetails.getServiceCharge());
+        assertEquals(new BigDecimal("96000.00"), billDetails.getTax());
+        assertEquals(new BigDecimal("1356000.00"), billDetails.getGrandTotal());
     }
 
     // UT-004: Test number of nights calculation
@@ -148,11 +148,11 @@ public class BillingServiceTest {
         
         // Assert: Verify calculations
         assertEquals(5, billDetails.getNumberOfNights());
-        assertEquals(new BigDecimal("250.00"), billDetails.getRoomRatePerNight());
-        assertEquals(new BigDecimal("1250.00"), billDetails.getRoomSubtotal());
-        assertEquals(new BigDecimal("62.50"), billDetails.getServiceCharge());
-        assertEquals(new BigDecimal("100.00"), billDetails.getTax());
-        assertEquals(new BigDecimal("1412.50"), billDetails.getGrandTotal());
+        assertEquals(new BigDecimal("75000.00"), billDetails.getRoomRatePerNight());
+        assertEquals(new BigDecimal("375000.00"), billDetails.getRoomSubtotal());
+        assertEquals(new BigDecimal("18750.00"), billDetails.getServiceCharge());
+        assertEquals(new BigDecimal("30000.00"), billDetails.getTax());
+        assertEquals(new BigDecimal("423750.00"), billDetails.getGrandTotal());
     }
 
     // UT-006: Test decimal precision for billing calculations
@@ -207,10 +207,10 @@ public class BillingServiceTest {
         
         // Assert: Verify all room types are present with correct rates
         assertEquals(4, roomRates.size());
-        assertEquals(new BigDecimal("100.00"), roomRates.get("SINGLE"));
-        assertEquals(new BigDecimal("150.00"), roomRates.get("DOUBLE"));
-        assertEquals(new BigDecimal("250.00"), roomRates.get("SUITE"));
-        assertEquals(new BigDecimal("400.00"), roomRates.get("DELUXE"));
+        assertEquals(new BigDecimal("30000.00"), roomRates.get("SINGLE"));
+        assertEquals(new BigDecimal("45000.00"), roomRates.get("DOUBLE"));
+        assertEquals(new BigDecimal("75000.00"), roomRates.get("SUITE"));
+        assertEquals(new BigDecimal("120000.00"), roomRates.get("DELUXE"));
     }
 
     // UT-009: Test invalid room type
