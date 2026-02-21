@@ -23,7 +23,9 @@ jobs:
           cache: maven
 
       - name: Build and run tests
-        run: mvn -B clean test package -Dspring.profiles.active=ci
+        run: mvn -B clean test package
+        env:
+          SPRING_PROFILES_ACTIVE: ci
 
       - name: Upload test reports
         if: always()
